@@ -1,20 +1,20 @@
-/// Splits arclight source code into the corresponding tree consisting of recursive branches
-/// Returns the branch struct
-use collections::linked_list;
+/// Splits arclight source code into the first token and the remainder of the line
+/// Run iteratively on a line via ArclightSyntaxTree Traverse
 
-fn Parse (line: T) -> linked_list {
+fn Parse(line: &str) -> Vec<&str> {
 	// parse lines in this order: quotes, parentheses, spaces
-	// TODO: complete parser 
+	// TODO: complete parser
+
+	ParseSpaces(line) 
 }
 
-fn ParseQuotes(line: T) -> linked_list {
+// fn ParseQuotes(line: T) -> linked_list {
 
-}
+// }
 
-fn ParseParentheses(line: T) -> linked_list {
+// fn ParseParentheses(line: T) -> linked_list {
+// }
 
-}
-
-fn ParseSpaces(line: T) -> linked_list {
-
+fn ParseSpaces(line: &str) -> Vec<&str> {
+	
 }

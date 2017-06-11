@@ -3,6 +3,7 @@
 use std::boxed::Box;
 use core::ptr::Shared;
 use core::marker::PhantomData;
+use std::cell::RefCell;
 
 pub struct ArclightSyntaxTree<T> {
 	head: Option<Shared<Branch<T>>>,
@@ -12,28 +13,25 @@ pub struct ArclightSyntaxTree<T> {
 }
 
 impl<T> ArclightSyntaxTree<T> {
-	fn Traverse(marker: PhantomData<Box<Branch<T>>>) {
+	fn Iter(marker: PhantomData<Box<Branch<T>>>) {
 		if some(Self.marker.d) {
 			Self.marker = Self.marker.d;
 		} else if some(Self.marker.r) {
 			Self.marker = Self.marker.r;
 		} else {
 				while some(Self.marker.l) {
-				Self.marker = Self.marker.l;
+				Self.marker = Self.marker.l.marker;
 			}
-			Self.marker = Self.marker.u.r;
+			Self.marker = Self.marker.u.r.marker;
 		}
 	}
 }
 
-pub struct Iter<'a, T: 'a> {
-}
-
 struct Branch<T> {
-	u: Option<Branch<T>>,
-	d: Option<Branch<T>>,
-	l: Option<Branch<T>>,
-	r: Option<Branch<T>>,
+	u: Option<Weak<RefCell<Branch<T>>>>,
+	l: Option<Weak<RefCell<Branch<T>>>>,
+	d: Option<Rc<RefCell<Branch<T>>>>,
+	r: Option<Rc<RefCell<Branch<T>>>>,
 	token: T,
 }
 
@@ -46,5 +44,17 @@ impl<T> Branch<T> {
 			l: None,
 			r: None,
 		}
+	}
+
+	fn LinkR(r: Branch) -> Self {
+		r.l = Self;
+		r.r = Self.r;
+		Self.r = r;
+	}
+
+	fn LinkD(d: Branch) -> Self {
+		d.u = Self;
+		d.d = Self.d;
+		Self.d = d;
 	}
 }
