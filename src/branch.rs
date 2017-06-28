@@ -5,24 +5,39 @@ use core::ptr::Shared;
 use core::marker::PhantomData;
 use std::cell::RefCell;
 
+// TODO: consider ARC or a non-hashmap backend
+
 pub struct ArclightSyntaxTree<T> {
 	head: Option<Shared<Branch<T>>>,
-	// to add: a hashmap of tokens
+	// TODO: add a hashmap of tokens
 	len: usize,
 	marker: PhantomData<Box<Branch<T>>>,
 }
 
+enum IterError {
+	TreeEnd,
+}
+
+type IterResult = Result(Ok(),IterError);
+
 impl<T> ArclightSyntaxTree<T> {
-	fn Iter(marker: PhantomData<Box<Branch<T>>>) {
+	fn Iter(&mut self) -> IterResult {
 		if some(Self.marker.d) {
 			Self.marker = Self.marker.d;
+			Ok()
 		} else if some(Self.marker.r) {
 			Self.marker = Self.marker.r;
+			Ok()
 		} else {
-				while some(Self.marker.l) {
-				Self.marker = Self.marker.l.marker;
+			while some(Self.marker.l) {
+				Self.marker = Self.marker.l;
 			}
-			Self.marker = Self.marker.u.r.marker;
+			if some(self.marker.u.r) {
+				Self.marker = Self.marker.u.r;
+				Ok()
+			} else {
+				IterError::TreeEnd
+			}
 		}
 	}
 }
