@@ -38,13 +38,13 @@ use std::collections::LinkedList;
 // }
 
 #[derive(PartialEq,Debug)]
-struct Element { // data structure is a linked list of these elements
+struct Element<T> { // data structure is a linked list of these elements
     sub_list: Option<LinkedList<Element>>,
-    token: String,
+    token: T,
 }
 
 impl fmt::Display for Element {
-    
+
 }
 
 

@@ -1,0 +1,19 @@
+< "Hi my name is " username ". How are you?"
+
+"Hi my name is "<username<". How are you?"
+
+"Hi my name is "<<". How are you?"
+	username
+
+"Hi my name is "<
+	username<". How are you?"
+
+"Hi my name is "<<". How are you?"
+	user.username
+
+"Hi my name is "<<". How are you?"
+	(user<(let self.username "chris")).username
+
+"Hi my name is "<<". How are you?"
+	(user<).username
+		let self.username "chris"
