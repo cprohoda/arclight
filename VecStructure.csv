@@ -1,0 +1,12 @@
+AST									
+Elements									
+Marker									
+Marker_depth									
+Size									
+									
+Elements	0	1	2	3	4	5	6	7	8
+token	“hi I am “	self.	“. How are you “	other.	“?”	username	username		
+sub		5		6					
+next	1	2	3	4					
+prev		0	1	2	3				
+super						1	3		
