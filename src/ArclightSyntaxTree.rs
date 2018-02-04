@@ -1,7 +1,6 @@
 use std::fmt;
 
-use Element::Element as Element;
-use Parser;
+use Element::Element;
 
 struct ArclightSyntaxTree {
     elements: Option<Vec<Element>>,
@@ -24,7 +23,7 @@ impl ArclightSyntaxTree {
     //     row_tokens
     // }
 
-    fn new() -> ArclightSyntaxTree {
+    pub fn new() -> ArclightSyntaxTree {
         ArclightSyntaxTree {
             elements: None,
             marker_depth: 0,

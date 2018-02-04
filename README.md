@@ -24,7 +24,7 @@
 .	as method, return component of instance
 :	as method, return component of uninstantiated object
 \	escape character (inside string it is a single character & outside string it is a single token)
-\s	token seperator
+ 	token seperator
 \t	branch specifier
 \n	branch separator
 

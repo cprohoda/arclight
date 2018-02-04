@@ -1,3 +1,5 @@
+#![feature(generators)]
+
 // pub mod lexer;
 pub mod Parser;
 pub mod Element;
