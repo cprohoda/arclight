@@ -1,35 +1,33 @@
-#![feature(generators, generator_trait)]
+const SPACE: char = ' ';
+const TAB: char = '\t';
+const NEW: char = '\n';
+const INSTANCE_SEND: char = '<';
+const INSTANCE_RETURN: char = '.';
+const UNINST_RETURN: char = ':';
+const ESCAPE: char = '\\';
+const QUOTE: char = '"';
+const PAREN_OPEN: char = '(';
+const PAREN_CLOSE: char = ')';
 
-use std::ops::{Generator, GeneratorState};
+enum state {
+    escape,
+    quote,
+    paren,
+    standard,
+}
 
-// let specials = 
-
-const space: char = ' ';
-const tab: char = '\t';
-const new: char = '\n';
-const instance_send: char = '<';
-const instance_return: char = '.';
-const uninst_return: char = ':';
-const escape: char = '\\';
-const quote: char = '"';
-const paren_open: char = '(';
-const paren_close: char = ')';
-
-// enum ParseResult {}
-
-pub fn parse(input: &str) -> Result<Option<String>, E> {
+pub fn parse(input: &str) -> Vec<String> {
     let mut accumulator = "".to_string();
+    let mut parsed: Vec<String> = Vec::new();
 
-    let mut generator = || {
-        accumulator = "".to_string(); 
-        for character in input.chars() {
-            accumulator.push(character);
-            match character {
-                space => yield accumulator,
-                new => yield accumulator,
-                _ => {},
-            }
+    for character in input.chars() {
+        match character {
+            SPACE => {parsed.push(accumulator); accumulator = "".to_string();},
+            NEW => {parsed.push(accumulator); parsed.push(NEW.to_string()); accumulator = "".to_string();},
+            TAB => {parsed.push(accumulator); parsed.push(TAB.to_string()); accumulator = "".to_string();},  
+            _ => accumulator.push(character),
         }
-        return None
-    };
+    }
+    parsed.push(accumulator);
+    return parsed;
 }
