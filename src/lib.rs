@@ -1,5 +1,6 @@
 // pub mod lexer;
-// pub mod parser;
+pub mod Parser;
+pub mod Element;
 // pub mod compiler;
 // pub mod repl;
 // pub mod branch;

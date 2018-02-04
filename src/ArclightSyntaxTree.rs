@@ -1,11 +1,12 @@
 use std::fmt;
 
-mod Elements;
+use Element::Element as Element;
+use Parser;
 
 struct ArclightSyntaxTree {
     elements: Option<Vec<Element>>,
     marker_depth: usize,
-    marker: Option<&Eleme>,
+    marker: Option<Element>,
 }
 
 impl ArclightSyntaxTree {
@@ -31,9 +32,8 @@ impl ArclightSyntaxTree {
         }
     }
 
-    fn build(&self, from: String) -> Self {
-
-    }
+    // fn build(&self, from: String) -> Self {
+    // }
 
     // fn to_alf(filename: &str) -> Result<> {
 
@@ -53,22 +53,22 @@ impl ArclightSyntaxTree {
 //     }
 // }
 
-impl Iterator for ArclightSyntaxTree {
-    fn next(self) -> Result<Option<usize>, E> {
-        // down if Some(marker.down)
-        //     self.marker_depth += 1;
-        //     self.marker = self.marker.down
-        //     Result<Success>
-        // else right if Some(marker.right)
-        //     self.marker = self.marker.right
-        //     Result<Success>
-        // else right if Some(marker.up.right)
-        //     marker_depth -= 1
-        //     self.marker = self.marker.up.right
-        //     Result<Success>
-        // else
-        //     Result<Failure>
-    }
+// impl Iterator for ArclightSyntaxTree {
+//     fn next(self) -> Result<Option<usize>, E> {
+//         // down if Some(marker.down)
+//         //     self.marker_depth += 1;
+//         //     self.marker = self.marker.down
+//         //     Result<Success>
+//         // else right if Some(marker.right)
+//         //     self.marker = self.marker.right
+//         //     Result<Success>
+//         // else right if Some(marker.up.right)
+//         //     marker_depth -= 1
+//         //     self.marker = self.marker.up.right
+//         //     Result<Success>
+//         // else
+//         //     Result<Failure>
+//     }
 
-    // fn has_next(&self) -> Result<()> {}
-}
+//     // fn has_next(&self) -> Result<()> {}
+// }

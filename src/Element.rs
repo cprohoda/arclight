@@ -1,5 +1,5 @@
 #[derive(PartialEq,Debug)]
-struct Element { // data structure is a linked list of these elements
+pub struct Element { // data structure is a linked list of these elements
     down: Option<usize>,
     up: Option<usize>,
     right: Option<usize>,
@@ -8,7 +8,7 @@ struct Element { // data structure is a linked list of these elements
 }
 
 impl Element {
-    fn new(token: String) -> Self {
+    fn new(token: String) -> Element {
         Element{
             down: None,
             up: None,
