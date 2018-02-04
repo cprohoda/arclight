@@ -18,6 +18,8 @@
 :vars:varname	return info on variable varname 
 
 ** Special **
+"	quote seperator
+(	parenthesis seperator
 <	as method, send result to instance
 .	as method, return component of instance
 :	as method, return component of uninstantiated object
