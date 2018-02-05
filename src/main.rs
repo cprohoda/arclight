@@ -4,7 +4,7 @@
 mod Parser;
 
 fn main() {
-    let example_string = "Hi my name. is Chris\n\tusername";
+    let example_string = "Hi my name. \"hahahaha\" is Chris\n\tusername";
 
     let blah = Parser::parse(example_string);
 
