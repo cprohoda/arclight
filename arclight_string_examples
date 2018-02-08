@@ -1,19 +1,26 @@
 < "Hi my name is " username ". How are you?"
+el el el el
 
 "Hi my name is "<username<". How are you?"
+el send el send el  
 
 "Hi my name is "<<". How are you?"
 	username
+el send send el n t el
 
 "Hi my name is "<
 	username<". How are you?"
+el send n t el send el
 
 "Hi my name is "<<". How are you?"
 	user.username
+el send send el n t el iret el 
 
 "Hi my name is "<<". How are you?"
 	(user<(let self.username "chris")).username
+el send send el n t 
 
-"Hi my name is "<<". How are you?"
+"Hi my name is "<<". How are you"<<"?"
 	(user<).username
 		let self.username "chris"
+	other.username
