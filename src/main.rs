@@ -1,16 +1,17 @@
 #![feature(generators)]
-
+use std::env;
+use std::fs::File;
+use std::io::prelude::*;
 
 mod Parser;
 
 fn main() {
-    let example_string = "Hi my name. \"hahahaha\" is Chris\n\tusername";
+	let filename = "~/arclight/arclight_string_examples";
+	let mut f = File::open(filename).expect("File not found");
+	let mut contents = String::new();
+	f.read_to_string(&mut contents).expect("Failed to read the file");
 
-    let blah = Parser::parse(example_string);
+    let blah = Parser::lex(contents);
 
-    println!("{:?}", blah)
-    // let mut test_list: ArclightSyntaxTree = ArclightSyntaxTree::new();
-
-    // al_tree::new(&mut test_list, example_string);
-    // println!("{}", test_list);
+    println!("{:?}", blah);
 }
