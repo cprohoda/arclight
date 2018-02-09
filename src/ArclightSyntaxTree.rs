@@ -1,11 +1,13 @@
 use std::fmt;
+use std::collections::VecDeque;
 
 use Element::Element;
 
 struct ArclightSyntaxTree {
-    elements: Option<Vec<Element>>,
+    elements: Vec<Element>,
     marker_depth: usize,
     marker: Option<Element>,
+    open_indexes: VecDeque<usize>,
 }
 
 impl ArclightSyntaxTree {
@@ -25,9 +27,10 @@ impl ArclightSyntaxTree {
 
     pub fn new() -> ArclightSyntaxTree {
         ArclightSyntaxTree {
-            elements: None,
+            elements: Vec::new(),
             marker_depth: 0,
             marker: None,
+            open_indexes: VecDeque::new(),
         }
     }
 

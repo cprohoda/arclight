@@ -1,26 +1,53 @@
 < "Hi my name is " username ". How are you?"
 el el el el
 
+
 "Hi my name is "<username<". How are you?"
 el send el send el  
+
 
 "Hi my name is "<<". How are you?"
 	username
 el send send el n t el
 
+
 "Hi my name is "<
 	username<". How are you?"
 el send n t el send el
 
+
 "Hi my name is "<<". How are you?"
 	user.username
-el send send el n t el iret el 
+el send send el n t el return el 
+
 
 "Hi my name is "<<". How are you?"
-	(user<(let self.username "chris")).username
-el send send el n t 
+	user<(let self.username "chris").username
+el send send el n t el send return el n t el el return el el
 
-"Hi my name is "<<". How are you"<<"?"
-	(user<).username
+
+"Hi my name is "<<". How are you "<<"?"
+	user<.username
 		let self.username "chris"
 	other.username
+el send send el send send el n t el send return el n t t el el return el el n t el return el
+
+
+
+build AST:
+break on n
+build first line, add to AST deque of indexes of elements with subelements to be added
+
+
+
+
+conclusion: 
+treat a paren pair as if it's on the next line
+
+token types:
+send     <
+return   .
+defined  :
+new      \n
+tab      \t
+element  everything else
