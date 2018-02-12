@@ -83,7 +83,7 @@ impl Tokens {
                     input_chars.next();
                 },
                 QUOTE => {
-                    self.push_token_from_accumulator();
+                    self.push_token_from_accumulator(); // TODO should this be a parsing error if accumulator != ""? Can we start a quote in the middle of a token?
                     self.accumulator = "\"".to_string();
                     while let Some(char_in_quote) = input_chars.next() {
                         match char_in_quote {
