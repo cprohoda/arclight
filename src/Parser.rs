@@ -1,9 +1,9 @@
 const SPACE: char = ' ';
 const TAB: char = '\t';
 const NEW: char = '\n';
-const INSTANCE_SEND: char = '<';
-const INSTANCE_RETURN: char = '.';
-const UNINST_RETURN: char = ':';
+const PASS: char = '<';
+const RETURN: char = '.';
+const DEFINED: char = ':';
 const ESCAPE: char = '\\';
 const QUOTE: char = '\"';
 const PAREN_OPEN: char = '(';
@@ -39,14 +39,15 @@ pub fn tokenize(input: &str) -> Vec<String> {
 enum TokenType {
     New,
     Tab,
-    Quote,
+    Pass,
+    Return,
+    Defined,
     Photon,
-    Arclight,
 }
 
 struct Token {
     token: String,
-    token_type: TokenType, 
+    type: TokenType,
 }
 
 impl Token {
@@ -59,16 +60,12 @@ impl Token {
 
     fn derive_type(token: String) -> TokenType {
         match token {
-            TAB => 
-            NEW =>
-            INSTANCE_SEND =>
-            INSTANCE_RETURN =>
-            UNINST_RETURN =>
-            ESCAPE =>
-            QUOTE =>
-            PAREN_OPEN =>
-            PAREN_CLOSE =>
-            _ => 
+            NEW => TokenType::New,
+            TAB => TokenType::Tab,
+            PASS => TokenType::Pass,
+            RETURN => TokenType::Return,
+            DEFINED => TokenType::Defined,
+            _ => TokenType::Photon,
         }
     }
 }
