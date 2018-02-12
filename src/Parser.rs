@@ -9,31 +9,11 @@ const QUOTE: char = '\"';
 const PAREN_OPEN: char = '(';
 const PAREN_CLOSE: char = ')';
 
-pub fn tokenize(input: &str) -> Vec<String> {
+pub fn parse(input: &str) -> Tokens {
     let mut tokens = Tokens::new();
-    let mut input_chars = input.chars();
+    tokens.tokenize(input);
 
-    while let Some(character) = input_chars.next() {
-        match character {
-            SPACE => {tokens.push_if(accumulator); accumulator = "".to_string();},
-            NEW => {tokens.push_if(accumulator); tokens.push_if(NEW.to_string()); accumulator = "".to_string();},
-            TAB => {tokens.push_if(accumulator); tokens.push_if(TAB.to_string()); accumulator = "".to_string();},
-            ESCAPE => {input_chars.next();},
-            QUOTE => {tokens.push_if(accumulator); accumulator = "\"".to_string();
-                while let Some(quote_char) = input_chars.next() {
-                    match quote_char {
-                        ESCAPE => {input_chars.next();},
-                        QUOTE => {accumulator.push(quote_char); tokens.push_if(accumulator); accumulator = "".to_string(); break;}
-                        _ => {accumulator.push(quote_char);},
-                    }
-                }
-            },
-            _ => accumulator.push(character),
-        }
-    }
-
-    tokens.push_if(accumulator);
-    return tokens.data();
+    tokens
 }
 
 enum TokenType {
@@ -51,7 +31,7 @@ struct Token {
 }
 
 impl Token {
-    fn new(token: String) -> Token {
+    fn new(token: &String) -> Token {
         Token {
             token: token,
             token_type: derive_type(token),
@@ -70,27 +50,73 @@ impl Token {
     }
 }
 
-#[derive(Clone)]
 struct Tokens {
     Tokens: Vec<Token>,
     accumulator: String,
 }
 
 impl Tokens {
-    fn new() -> Tokens {
+    pub fn new() -> Tokens {
         Tokens {
-            Tokens: Vec::new()
+            Tokens: Vec::new(),
+            accumulator: "",
         }
     }
 
-    fn push_if(&mut self, token: Token) {
-        if token.token != "" {
-            self.data.push(value);
+    pub fn tokenize(&mut self, input: &str) {
+        let mut input_chars = input.chars();
+
+        while let Some(character) = input_chars.next() {
+            match character {
+                SPACE => {
+                    self.push_token_from_accumulator();
+                },
+                NEW => {
+                    self.push_token_from_accumulator();
+                    self.push_character_token(NEW);
+                },
+                TAB => {
+                    self.push_token_from_accumulator();
+                    self.push_character_token(TAB);
+                },
+                ESCAPE => {
+                    input_chars.next();
+                },
+                QUOTE => {
+                    self.push_token_from_accumulator();
+                    self.accumulator = "\"".to_string();
+                    while let Some(char_in_quote) = input_chars.next() {
+                        match char_in_quote {
+                            ESCAPE => {
+                                input_chars.next();
+                            },
+                            QUOTE => {
+                                self.accumulator.push(quote_char);
+                                self.push_token_from_accumulator();
+                                break;
+                            }
+                            _ => {
+                                self.accumulator.push(quote_char);
+                            },
+                        }
+                    }
+                },
+                _ => self.accumulator.push(character),
+            }
+        };
+    }
+
+    fn push_token_from_accumulator(&mut self) -> Token {
+        if self.accumulator != "" {
+            let accumulated_token = Token::new(&self.accumulator);
+            self.Tokens.push(accumulated_token);
+            self.accumulator = "";
         }
     }
 
-    fn data(&self) -> Vec<String> {
-        self.data.clone()
+    fn push_character_token(&mut self, character: char) {
+        let character_token = Token::new(&character.to_string());
+        self.Tokens.push(character_token);
     }
 }
 
