@@ -80,25 +80,31 @@ impl Tokens {
                     self.push_character_token(TAB);
                 },
                 ESCAPE => {
-                    input_chars.next();
+                    self.accumulator.push(character);
+                    self.accumulator.push(input_chars.next());
                 },
                 QUOTE => {
                     self.push_token_from_accumulator(); // TODO should this be a parsing error if accumulator != ""? Can we start a quote in the middle of a token?
-                    self.accumulator = "\"".to_string();
+                    self.accumulator.push(QUOTE.to_string());
                     while let Some(char_in_quote) = input_chars.next() {
+                        self.accumulator.push(char_in_quote);
                         match char_in_quote {
                             ESCAPE => {
-                                input_chars.next();
+                                self.accumulator.push(input_chars.next());
                             },
                             QUOTE => {
-                                self.accumulator.push(quote_char);
                                 self.push_token_from_accumulator();
                                 break;
-                            }
-                            _ => {
-                                self.accumulator.push(quote_char);
                             },
+                            _ => {},
                         }
+                    }
+                },
+                PAREN_OPEN => {
+                    self.push_token_from_accumulator(); // TODO should it be parsing error? Similar to quote case above
+                    self.accumulator.push(PAREN_OPEN);
+                    while let Some(char_in_paren) = input_chars.next() {
+                        // needs recursive paren matching
                     }
                 },
                 _ => self.accumulator.push(character),
