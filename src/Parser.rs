@@ -101,15 +101,20 @@ impl Tokens {
                     }
                 },
                 PAREN_OPEN => {
-                    self.push_token_from_accumulator(); // TODO should it be parsing error? Similar to quote case above
-                    self.accumulator.push(PAREN_OPEN);
-                    while let Some(char_in_paren) = input_chars.next() {
-                        // needs recursive paren matching
-                    }
+                    self.paren_parse(input_chars);
                 },
                 _ => self.accumulator.push(character),
             }
         };
+    }
+
+    fn paren_parse(&mut self, input_chars: Chars) {
+        self.push_token_from_accumulator(); // TODO should it be parsing error? Similar to quote case above
+        self.accumulator.push(PAREN_OPEN);
+        while let Some(char_in_paren) = input_chars.next() {
+            // 
+            // maybe use a macro to apply same matching rules here as in tokenize for SPACE, NEW, TAB, ESCAPE, QUOTE, and PAREN_OPEN with a separate addition rule for PAREN_CLOSE?
+        }
     }
 
     fn push_token_from_accumulator(&mut self) -> Token {
