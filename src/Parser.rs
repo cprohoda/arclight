@@ -1,3 +1,5 @@
+use std::str::Chars;
+
 const SPACE: char = ' ';
 const TAB: char = '\t';
 const NEW: char = '\n';
@@ -71,7 +73,7 @@ impl Tokens {
         };
     }
 
-    fn character_match(&mut self, character: Char, input_chars: Chars, final_branch: &Fn(Char)) {
+    fn character_match(&mut self, character: char, input_chars: Chars, final_branch: &Fn(char)) {
         match character {
             SPACE => {
                 self.push_token_from_accumulator();
@@ -126,7 +128,7 @@ impl Tokens {
         }
     }
 
-    fn paren_close_branch(character: Char) {
+    fn paren_close_branch(character: char) {
         self.accumulator.push(character);
         match character {
             PAREN_CLOSE => {
@@ -137,7 +139,7 @@ impl Tokens {
         }
     }
 
-    fn other_char_match(character: Char) {
+    fn other_char_match(character: char) {
         self.accumulator.push(character)
     }
 
