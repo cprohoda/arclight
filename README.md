@@ -1,10 +1,11 @@
 # arclight
 
--- Currently working on this to learn rust --
 -- Very incomplete --
 
 ** Language philosophy **
 - metadata is the one true promised land
+- rapid prototyping via default behavior
+- transition from rapid to maintainable through recursive refinement
 
 ** Universal Methods **
 <	returns preceeding after operation based on following
@@ -25,7 +26,7 @@
 :	as method, return component of uninstantiated object
 \	escape character (inside string it is a single character & outside string it is a single token)
  	token seperator
-\t	branch specifier
+\t	branch depth specifier
 \n	branch separator
 
 ** Todo **
