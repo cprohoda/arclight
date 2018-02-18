@@ -155,3 +155,27 @@ impl Tokens {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn space_parsing() {
+        let mut expected = Tokens::new();
+        expected.push(Token {
+            token: "a",
+            token_type: TokenType::Photon,
+        });
+        expected.push(Token {
+            token: "b",
+            token_type: TokenType::Photon,
+        });
+
+        let actual = parse("a b");
+
+        assert_eq!(expected, actual); // TODO: Does this work? I assume I need to add a trait to Tokens
+    }
+
+    // #[test]
+    // fn double_space_parse() { // TODO: this should throw parsing error
+    //     let actual = parse("a  b");
+    // }
+}
