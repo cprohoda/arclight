@@ -67,54 +67,78 @@ impl Tokens {
         let mut input_chars = input.chars();
 
         while let Some(character) = input_chars.next() {
-            match character {
-                SPACE => {
-                    self.push_token_from_accumulator();
-                },
-                NEW => {
-                    self.push_token_from_accumulator();
-                    self.push_character_token(NEW);
-                },
-                TAB => {
-                    self.push_token_from_accumulator();
-                    self.push_character_token(TAB);
-                },
-                ESCAPE => {
-                    self.accumulator.push(character);
-                    self.accumulator.push(input_chars.next());
-                },
-                QUOTE => {
-                    self.push_token_from_accumulator(); // TODO should this be a parsing error if accumulator != ""? Can we start a quote in the middle of a token?
-                    self.accumulator.push(QUOTE.to_string());
-                    while let Some(char_in_quote) = input_chars.next() {
-                        self.accumulator.push(char_in_quote);
-                        match char_in_quote {
-                            ESCAPE => {
-                                self.accumulator.push(input_chars.next());
-                            },
-                            QUOTE => {
-                                self.push_token_from_accumulator();
-                                break;
-                            },
-                            _ => {},
-                        }
-                    }
-                },
-                PAREN_OPEN => {
-                    self.paren_parse(input_chars);
-                },
-                _ => self.accumulator.push(character),
-            }
+            self.character_match(character, input_chars, self.other_char_match);
         };
     }
 
-    fn paren_parse(&mut self, input_chars: Chars) {
+    fn character_match(&mut self, character: Char, input_chars: Chars, final_branch: &Fn(Char)) {
+        match character {
+            SPACE => {
+                self.push_token_from_accumulator();
+            },
+            NEW => {
+                self.push_token_from_accumulator();
+                self.push_character_token(NEW);
+            },
+            TAB => {
+                self.push_token_from_accumulator();
+                self.push_character_token(TAB);
+            },
+            ESCAPE => {
+                self.accumulator.push(character);
+                self.accumulator.push(input_chars.next());
+            },
+            QUOTE => {
+                self.quote_match(input_chars);
+            },
+            PAREN_OPEN => {
+                self.paren_open_match(input_chars);
+            },
+            _ => {
+                final_branch(character);
+            },
+        }
+    }
+
+    fn quote_match(&mut self, mut input_chars: Chars) {
+        self.push_token_from_accumulator(); // TODO should this be a parsing error if accumulator != ""? Can we start a quote in the middle of a token?
+        self.accumulator.push(QUOTE.to_string());
+        while let Some(char_in_quote) = input_chars.next() {
+            self.accumulator.push(char_in_quote);
+            match char_in_quote {
+                ESCAPE => {
+                    self.accumulator.push(input_chars.next());
+                },
+                QUOTE => {
+                    self.push_token_from_accumulator();
+                    break;
+                },
+                _ => {},
+            }
+        }
+    }
+
+    fn paren_open_match(&mut self, mut input_chars: Chars) {
         self.push_token_from_accumulator(); // TODO should it be parsing error? Similar to quote case above
         self.accumulator.push(PAREN_OPEN);
         while let Some(char_in_paren) = input_chars.next() {
-            // 
-            // maybe use a macro to apply same matching rules here as in tokenize for SPACE, NEW, TAB, ESCAPE, QUOTE, and PAREN_OPEN with a separate addition rule for PAREN_CLOSE?
+            self.character_match(char_in_paren, input_chars, self.paren_close_match(character));
         }
+    }
+
+    fn paren_close_branch(character: Char) {
+        self.accumulator.push(character);
+        match character {
+            PAREN_CLOSE => {
+                self.push_token_from_accumulator();
+                break
+            },
+            _ => {},
+        }
+    }
+
+    fn other_char_match(character: Char) {
+        self.accumulator.push(character)
     }
 
     fn push_token_from_accumulator(&mut self) -> Token {
