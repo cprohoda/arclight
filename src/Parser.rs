@@ -29,24 +29,24 @@ enum TokenType {
 
 struct Token {
     token: String,
-    type: TokenType,
+    token_type: TokenType,
 }
 
 impl Token {
-    fn new(token: &String) -> Token {
+    fn new(token: &str) -> Token {
         Token {
-            token: token,
+            token: token.to_string(),
             token_type: derive_type(token),
         }
     }
 
     fn derive_type(token: String) -> TokenType {
         match token {
-            NEW => TokenType::New,
-            TAB => TokenType::Tab,
-            PASS => TokenType::Pass,
-            RETURN => TokenType::Return,
-            DEFINED => TokenType::Defined,
+            NEW.to_string() => TokenType::New,
+            TAB.to_string() => TokenType::Tab,
+            PASS.to_string() => TokenType::Pass,
+            RETURN.to_string() => TokenType::Return,
+            DEFINED.to_string() => TokenType::Defined,
             _ => TokenType::Photon,
         }
     }
@@ -61,7 +61,7 @@ impl Tokens {
     pub fn new() -> Tokens {
         Tokens {
             Tokens: Vec::new(),
-            accumulator: "",
+            accumulator: "".to_string(),
         }
     }
 
@@ -88,7 +88,7 @@ impl Tokens {
             },
             ESCAPE => {
                 self.accumulator.push(character);
-                self.accumulator.push(input_chars.next());
+                self.accumulator.push(input_chars.next().unwrap());
             },
             QUOTE => {
                 self.quote_match(input_chars);
@@ -104,12 +104,12 @@ impl Tokens {
 
     fn quote_match(&mut self, mut input_chars: Chars) {
         self.push_token_from_accumulator(); // TODO should this be a parsing error if accumulator != ""? Can we start a quote in the middle of a token?
-        self.accumulator.push(QUOTE.to_string());
+        self.accumulator.push(QUOTE);
         while let Some(char_in_quote) = input_chars.next() {
             self.accumulator.push(char_in_quote);
             match char_in_quote {
                 ESCAPE => {
-                    self.accumulator.push(input_chars.next());
+                    self.accumulator.push(input_chars.next().unwrap());
                 },
                 QUOTE => {
                     self.push_token_from_accumulator();
@@ -124,11 +124,11 @@ impl Tokens {
         self.push_token_from_accumulator(); // TODO should it be parsing error? Similar to quote case above
         self.accumulator.push(PAREN_OPEN);
         while let Some(char_in_paren) = input_chars.next() {
-            self.character_match(char_in_paren, input_chars, self.paren_close_match(character));
+            self.character_match(char_in_paren, input_chars, self.paren_close_match(char_in_paren));
         }
     }
 
-    fn paren_close_branch(character: char) {
+    fn paren_close_match(&mut self, character: char) {
         self.accumulator.push(character);
         match character {
             PAREN_CLOSE => {
@@ -139,16 +139,16 @@ impl Tokens {
         }
     }
 
-    fn other_char_match(character: char) {
+    fn other_char_match(&mut self, character: char) {
         self.accumulator.push(character)
     }
 
-    fn push_token_from_accumulator(&mut self) -> Token {
+    fn push_token_from_accumulator(&mut self) {
         if self.accumulator != "" {
             let accumulated_token = Token::new(&self.accumulator);
             self.Tokens.push(accumulated_token);
-            self.accumulator = "";
-        }
+            self.accumulator = "".to_string();
+        };
     }
 
     fn push_character_token(&mut self, character: char) {
@@ -159,15 +159,17 @@ impl Tokens {
 
 #[cfg(test)]
 mod tests {
+    use Parser::parse;
+    use Parser::Token;
     #[test]
     fn space_parsing() {
         let mut expected = Tokens::new();
         expected.push(Token {
-            token: "a",
+            token: "a".to_string(),
             token_type: TokenType::Photon,
         });
         expected.push(Token {
-            token: "b",
+            token: "b".to_string(),
             token_type: TokenType::Photon,
         });
 
