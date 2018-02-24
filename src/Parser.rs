@@ -35,12 +35,12 @@ struct Token {
 impl Token {
     fn new(token: String) -> Token {
         Token {
+            token_type: Token::derive_type(&token),
             token: token,
-            token_type: Token::derive_type(token),
         }
     }
 
-    fn derive_type(token: String) -> TokenType {
+    fn derive_type(token: &String) -> TokenType {
         use Parser::TokenType;
 
         let new_string = NEW.to_string();
@@ -60,7 +60,7 @@ impl Token {
     }
 }
 
-struct Tokens {
+pub struct Tokens {
     Tokens: Vec<Token>,
     accumulator: String,
 }
@@ -77,11 +77,11 @@ impl Tokens {
         let mut input_chars = input.chars();
 
         while let Some(character) = input_chars.next() {
-            self.character_match(character, input_chars);
+            self.character_match(character, &mut input_chars);
         };
     }
 
-    fn character_match(&mut self, character: char, mut input_chars: Chars) {
+    fn character_match(&mut self, character: char, input_chars: &mut Chars) {
         match character {
             SPACE => {
                 self.push_token_from_accumulator();
@@ -108,7 +108,7 @@ impl Tokens {
         }
     }
 
-    fn quote_match(&mut self, mut input_chars: Chars) {
+    fn quote_match(&mut self, input_chars: &mut Chars) {
         self.push_token_from_accumulator(); // TODO should this be a parsing error if accumulator != ""? Can we start a quote in the middle of a token?
         self.accumulator.push(QUOTE);
         while let Some(char_in_quote) = input_chars.next() {
@@ -126,7 +126,7 @@ impl Tokens {
         }
     }
 
-    fn paren_open_match(&mut self, mut input_chars: Chars) {
+    fn paren_open_match(&mut self, input_chars: &mut Chars) {
         self.push_token_from_accumulator(); // TODO should it be parsing error? Similar to quote case above
         self.accumulator.push(PAREN_OPEN);
         while let Some(char_in_paren) = input_chars.next() {
@@ -144,8 +144,8 @@ impl Tokens {
     }
 
     fn push_token_from_accumulator(&mut self) {
-        if self.accumulator != "" {
-            let accumulated_token = Token::new(self.accumulator);
+        if self.accumulator != "".to_string() {
+            let accumulated_token = Token::new(self.accumulator.to_owned());
             self.Tokens.push(accumulated_token);
             self.accumulator = "".to_string();
         };
