@@ -11,7 +11,5 @@ fn main() {
 	let mut contents = String::new();
 	f.read_to_string(&mut contents).expect("Failed to read the file");
 
-    let blah = Parser::lex(contents);
-
-    println!("{:?}", blah);
+    let blah = Parser::parse(&contents);
 }
