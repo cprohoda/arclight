@@ -77,11 +77,11 @@ impl Tokens {
         let mut input_chars = input.chars();
 
         while let Some(character) = input_chars.next() {
-            self.character_match(character, input_chars, &self.other_char_match);
+            self.character_match(character, input_chars);
         };
     }
 
-    fn character_match(&mut self, character: char, input_chars: Chars, final_branch: &Fn(char)) {
+    fn character_match(&mut self, character: char, mut input_chars: Chars) {
         match character {
             SPACE => {
                 self.push_token_from_accumulator();
@@ -104,9 +104,7 @@ impl Tokens {
             PAREN_OPEN => {
                 self.paren_open_match(input_chars);
             },
-            _ => {
-                final_branch(character);
-            },
+            _ => {},
         }
     }
 
@@ -132,22 +130,17 @@ impl Tokens {
         self.push_token_from_accumulator(); // TODO should it be parsing error? Similar to quote case above
         self.accumulator.push(PAREN_OPEN);
         while let Some(char_in_paren) = input_chars.next() {
-            self.character_match(char_in_paren, input_chars, &self.paren_close_match);
-        }
-    }
-
-    fn paren_close_match(&mut self, character: char) {
-        self.accumulator.push(character);
-        match character {
-            PAREN_CLOSE => {
-                self.push_token_from_accumulator();
-            },
-            _ => {},
+            match char_in_paren {
+                PAREN_CLOSE => {
+                    self.accumulator.push(char_in_paren);
+                    self.push_token_from_accumulator();
+                    break;
+                },
+                _ => {
+                    self.character_match(char_in_paren, input_chars);
+                },
+            };
         };
-    }
-
-    fn other_char_match(&mut self, character: char) {
-        self.accumulator.push(character);
     }
 
     fn push_token_from_accumulator(&mut self) {
