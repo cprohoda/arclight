@@ -1,4 +1,5 @@
 use std::str::Chars;
+use std::fmt;
 
 const SPACE: char = ' ';
 const TAB: char = '\t';
@@ -60,6 +61,20 @@ impl Token {
     }
 }
 
+impl fmt::Debug for Token {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let token_type_name = match self.token_type {
+            TokenType::New => "New",
+            TokenType::Tab => "Tab",
+            TokenType::Pass => "Pass",
+            TokenType::Return => "Return",
+            TokenType::Defined => "Defined",
+            TokenType::Photon => "Photon",
+        };
+        write!(f, "Token {:?}:{:?}", token_type_name, self.token)
+    }
+}
+
 pub struct Tokens {
     Tokens: Vec<Token>,
     accumulator: String,
@@ -109,7 +124,7 @@ impl Tokens {
     }
 
     fn quote_match(&mut self, input_chars: &mut Chars) {
-        self.push_token_from_accumulator(); // TODO should this be a parsing error if accumulator != ""? Can we start a quote in the middle of a token?
+        self.push_token_from_accumulator(); // TODO should this be a parsing error if accumulator != "".to_string()? Can we start a quote in the middle of a token?
         self.accumulator.push(QUOTE);
         while let Some(char_in_quote) = input_chars.next() {
             self.accumulator.push(char_in_quote);
@@ -161,6 +176,12 @@ impl Tokens {
     }
 }
 
+impl fmt::Debug for Tokens {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Tokens {:?}", self.Tokens)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use Parser::parse;
@@ -181,7 +202,6 @@ mod tests {
         });
 
         let actual = parse("a b");
-
         // assert_eq!(expected, actual); // TODO: Does this work? I assume I need to add a trait to Tokens
     }
 
