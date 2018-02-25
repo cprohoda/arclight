@@ -19,6 +19,7 @@ pub fn parse(input: &str) -> Tokens {
     tokens
 }
 
+#[derive(PartialEq)]
 enum TokenType {
     New,
     Tab,
@@ -72,6 +73,12 @@ impl fmt::Debug for Token {
             TokenType::Photon => "Photon",
         };
         write!(f, "Token {:?}:{:?}", token_type_name, self.token)
+    }
+}
+
+impl PartialEq for Token {
+    fn eq(&self, other: &Token) -> bool {
+        self.token_type == other.token_type && self.token == other.token
     }
 }
 
@@ -182,6 +189,20 @@ impl fmt::Debug for Tokens {
     }
 }
 
+impl PartialEq for Tokens {
+    fn eq(&self, other: &Tokens) -> bool {
+        let mut equality: bool = self.Tokens.len() == other.Tokens.len();
+        let mut iter_other = other.Tokens.iter();
+
+        for self_token in &self.Tokens {
+            if !equality { break; }
+            equality = self_token == iter_other.next().unwrap();
+        }
+
+        equality
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use Parser::parse;
@@ -202,7 +223,7 @@ mod tests {
         });
 
         let actual = parse("a b");
-        // assert_eq!(expected, actual); // TODO: Does this work? I assume I need to add a trait to Tokens
+        assert_eq!(expected, actual);
     }
 
     // #[test]
