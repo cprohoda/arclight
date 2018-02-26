@@ -12,11 +12,16 @@ const QUOTE: char = '\"';
 const PAREN_OPEN: char = '(';
 const PAREN_CLOSE: char = ')';
 
-pub fn parse(input: &str) -> Tokens {
+pub fn parse(input: &str) -> Result<Tokens, ParserError> {
     let mut tokens = Tokens::new();
-    tokens.tokenize(input);
+    tokens.tokenize(input)
+}
 
-    tokens
+#[derive(Debug,PartialEq)]
+pub enum ParserError {
+    DoubleSpace,
+    UnmatchedQuote,
+    UnmatchedParen,
 }
 
 #[derive(PartialEq)]
@@ -95,38 +100,49 @@ impl Tokens {
         }
     }
 
-    pub fn tokenize(&mut self, input: &str) {
+    pub fn tokenize(&mut self, input: &str) -> Result<Tokens, ParserError> {
         let mut input_chars = input.chars();
 
         while let Some(character) = input_chars.next() {
-            self.character_match(character, &mut input_chars);
+            match self.character_match(character, &mut input_chars) {
+                Err(e) => {return Err(e);},
+                Ok(t) => {},
+            }
         };
+
+        Ok(self)
     }
 
-    fn character_match(&mut self, character: char, input_chars: &mut Chars) {
+    fn character_match(&mut self, character: char, input_chars: &mut Chars) -> Result<(),ParserError> {
         match character {
             SPACE => {
                 self.push_token_from_accumulator();
+                Ok(())
             },
             NEW => {
                 self.push_token_from_accumulator();
                 self.push_character_token(NEW);
+                Ok(())
             },
             TAB => {
                 self.push_token_from_accumulator();
                 self.push_character_token(TAB);
+                Ok(())
             },
             ESCAPE => {
                 self.accumulator.push(character);
                 self.accumulator.push(input_chars.next().unwrap());
+                Ok(())
             },
             QUOTE => {
                 self.quote_match(input_chars);
+                Ok(())
             },
             PAREN_OPEN => {
                 self.paren_open_match(input_chars);
+                Ok(())
             },
-            _ => {},
+            _ => {Ok(())},
         }
     }
 
@@ -209,6 +225,7 @@ mod tests {
     use Parser::Token;
     use Parser::Tokens;
     use Parser::TokenType;
+    use Parser::ParserError;
 
     #[test]
     fn space_parsing() {
@@ -222,12 +239,12 @@ mod tests {
             token_type: TokenType::Photon,
         });
 
-        let actual = parse("a b");
+        let actual = parse("a b").expect("This shouldn't error");
         assert_eq!(expected, actual);
     }
 
-    // #[test]
-    // fn double_space_parse() { // TODO: this should throw parsing error
-    //     let actual = parse("a  b");
-    // }
+    #[test]
+    fn double_space_parse() { // TODO: this should throw parsing error
+        assert_eq!(ParserError::DoubleSpace, parse("a  b").unwrap_err());
+    }
 }
