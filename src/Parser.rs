@@ -45,18 +45,18 @@ impl Token {
     fn derive_type(token: &String) -> TokenType {
         use Parser::TokenType;
 
-        let new_string = NEW.to_string();
-        let tab_string = TAB.to_string();
-        let pass_string = PASS.to_string();
-        let return_string = RETURN.to_string();
-        let defined_string = DEFINED.to_string();
+        const NEW_STR: &str = "\n";
+        const TAB_STR: &str = "\t";
+        const PASS_STR: &str = "<";
+        const RETURN_STR: &str = ".";
+        const DEFINED_STR: &str = ":";
 
-        match token {
-            new_string => TokenType::New,
-            tab_string => TokenType::Tab,
-            pass_string => TokenType::Pass,
-            return_string => TokenType::Return,
-            defined_string => TokenType::Defined,
+        match token.as_str() {
+            NEW_STR => TokenType::New,
+            TAB_STR => TokenType::Tab,
+            PASS_STR => TokenType::Pass,
+            RETURN_STR => TokenType::Return,
+            DEFINED_STR => TokenType::Defined,
             _ => TokenType::Photon,
         }
     }
