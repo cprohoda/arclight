@@ -25,6 +25,7 @@ pub enum ParserError {
     DoubleSpace,
     UnmatchedQuote,
     UnmatchedParen,
+    EndingSpace,
 }
 
 #[derive(PartialEq)]
@@ -251,7 +252,19 @@ mod tests {
     }
 
     #[test]
-    fn double_space_parse() { // TODO: this should throw parsing error
+    fn double_space_parse() { // TODO: implement this behavior
         assert_eq!(ParserError::DoubleSpace, parse("a  b").unwrap_err());
+    }
+
+    fn ending_space_parse() { // TODO: implement
+        assert_eq!(ParserError::EndingSpace, parse("a ").unwrap_err());
+    }
+
+    fn unmatched_paren_parse() { // TODO: implement
+        assert_eq!(ParserError::UnmatchedParen, parse("(a (b )").unwrap_err());
+    }
+
+    fn unmatched_quote_parse() { // TODO: implement
+        assert_eq!(ParserError::UnmatchedQuote, parse("a \"b").unwrap_err());
     }
 }
