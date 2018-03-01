@@ -14,7 +14,10 @@ const PAREN_CLOSE: char = ')';
 
 pub fn parse(input: &str) -> Result<Tokens, ParserError> {
     let mut tokens = Tokens::new();
-    tokens.tokenize(input)
+    match tokens.tokenize(input) {
+        Err(e) => {return Err(e);},
+        Ok(()) => {return Ok(tokens);},
+    }
 }
 
 #[derive(Debug,PartialEq)]
@@ -100,17 +103,17 @@ impl Tokens {
         }
     }
 
-    pub fn tokenize(&mut self, input: &str) -> Result<Tokens, ParserError> {
+    pub fn tokenize(&mut self, input: &str) -> Result<(), ParserError> {
         let mut input_chars = input.chars();
 
         while let Some(character) = input_chars.next() {
             match self.character_match(character, &mut input_chars) {
                 Err(e) => {return Err(e);},
-                Ok(t) => {},
+                Ok(()) => {},
             }
         };
 
-        Ok(self)
+        Ok(())
     }
 
     fn character_match(&mut self, character: char, input_chars: &mut Chars) -> Result<(),ParserError> {
