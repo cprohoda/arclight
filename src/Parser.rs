@@ -112,6 +112,7 @@ impl Tokens {
                 Ok(()) => {},
             }
         };
+        self.push_token_from_accumulator();
 
         Ok(())
     }
@@ -145,7 +146,10 @@ impl Tokens {
                 self.paren_open_match(input_chars);
                 Ok(())
             },
-            _ => {Ok(())},
+            _ => {
+                self.accumulator.push(character);
+                Ok(())
+            },
         }
     }
 
