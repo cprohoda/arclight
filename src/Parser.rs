@@ -25,7 +25,7 @@ pub enum ParserError {
     UnexpectedSpace,
     UnmatchedQuote,
     UnmatchedParen,
-    EndingSpace,
+    UnterminatedBranch,
 }
 
 #[derive(PartialEq)]
@@ -267,7 +267,7 @@ mod tests {
 
     #[test]
     fn ending_space_parse() { // TODO: implement
-        assert_eq!(ParserError::EndingSpace, parse("a ").unwrap_err());
+        assert_eq!(ParserError::UnterminatedBranch, parse("a ").unwrap_err());
     }
 
     #[test]
