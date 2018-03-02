@@ -22,7 +22,7 @@ pub fn parse(input: &str) -> Result<Tokens, ParserError> {
 
 #[derive(Debug,PartialEq)]
 pub enum ParserError {
-    DoubleSpace,
+    UnexpectedSpace,
     UnmatchedQuote,
     UnmatchedParen,
     EndingSpace,
@@ -121,8 +121,12 @@ impl Tokens {
     fn character_match(&mut self, character: char, input_chars: &mut Chars) -> Result<(),ParserError> {
         match character {
             SPACE => {
-                self.push_token_from_accumulator();
-                Ok(())
+                if self.accumulator == "".to_string() {
+                    return Err(ParserError::UnexpectedSpace);
+                } else {
+                    self.push_token_from_accumulator();
+                    return Ok(());
+                }
             },
             NEW => {
                 self.push_token_from_accumulator();
@@ -252,18 +256,26 @@ mod tests {
     }
 
     #[test]
-    fn double_space_parse() { // TODO: implement this behavior
-        assert_eq!(ParserError::DoubleSpace, parse("a  b").unwrap_err());
+    fn double_space_parse() {
+        assert_eq!(ParserError::UnexpectedSpace, parse("a  b").unwrap_err());
     }
 
+    #[test]
+    fn beginning_space_parse() {
+        assert_eq!(ParserError::UnexpectedSpace, parse(" a").unwrap_err());
+    }
+
+    #[test]
     fn ending_space_parse() { // TODO: implement
         assert_eq!(ParserError::EndingSpace, parse("a ").unwrap_err());
     }
 
+    #[test]
     fn unmatched_paren_parse() { // TODO: implement
         assert_eq!(ParserError::UnmatchedParen, parse("(a (b )").unwrap_err());
     }
 
+    #[test]
     fn unmatched_quote_parse() { // TODO: implement
         assert_eq!(ParserError::UnmatchedQuote, parse("a \"b").unwrap_err());
     }
