@@ -264,6 +264,22 @@ mod tests {
     }
 
     #[test]
+    fn quote_parse() {
+        let mut expected = Tokens::new();
+        expected.push_token(Token {
+            token: "a".to_string(),
+            token_type: TokenType::Photon,
+        });
+        expected.push_token(Token {
+            token: "\"giant\tapple\"".to_string(),
+            token_type: TokenType::Photon,
+        });
+
+        let actual = parse("a \"giant\tapple\"").expect("Testing quote_parse, parse");
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
     fn double_space_parse() {
         assert_eq!(ParserError::UnexpectedSpace, parse("a  b").unwrap_err());
     }
