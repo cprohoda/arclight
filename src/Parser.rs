@@ -151,6 +151,11 @@ impl Tokens {
                 self.accumulator.push(input_chars.next().unwrap());
                 Ok(())
             },
+            PASS => {
+                self.push_token_from_accumulator();
+                self.push_character_token(PASS);
+                Ok(())
+            },
             QUOTE => {
                 self.quote_match(input_chars);
                 Ok(())
@@ -246,6 +251,7 @@ mod tests {
     use Parser::Tokens;
     use Parser::TokenType;
     use Parser::ParserError;
+    use Parser::PASS;
 
     #[test]
     fn space_parsing() {
@@ -276,6 +282,26 @@ mod tests {
         });
 
         let actual = parse("a \"giant\tapple\"").expect("Testing quote_parse, parse");
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn pass_parse() {
+        let mut expected = Tokens::new();
+        expected.push_token(Token {
+            token: "a".to_string(),
+            token_type: TokenType::Photon,
+        });
+        expected.push_token(Token {
+            token: PASS.to_string(),
+            token_type: TokenType::Pass,
+        });
+        expected.push_token(Token {
+            token: "b".to_string(),
+            token_type: TokenType::Photon,
+        });
+
+        let actual = parse("a<b").expect("Testing pass_parse, parse");
         assert_eq!(expected, actual);
     }
 
