@@ -15,8 +15,13 @@ const PAREN_CLOSE: char = ')';
 pub fn parse(input: &str) -> Result<Tokens, ParserError> {
     let mut tokens = Tokens::new();
     match tokens.tokenize(input) {
-        Err(e) => {return Err(e);},
-        Ok(()) => {return Ok(tokens);},
+        Err(e) => {
+            return Err(e);
+        },
+        Ok(()) => {
+            tokens.finalize();
+            return Ok(tokens);
+        },
     }
 }
 
@@ -113,9 +118,12 @@ impl Tokens {
                 Ok(()) => {},
             }
         };
-        self.push_token_from_accumulator();
 
         Ok(())
+    }
+
+    pub fn finalize(&mut self) {
+        self.push_token_from_accumulator();
     }
 
     fn character_match(&mut self, character: char, input_chars: &mut Chars) -> Result<(),ParserError> {
@@ -278,5 +286,17 @@ mod tests {
     #[test]
     fn unmatched_quote_parse() { // TODO: implement
         assert_eq!(ParserError::UnmatchedQuote, parse("a \"b").unwrap_err());
+    }
+
+    #[test]
+    fn patial_tokenize(){
+        let mut partial = Tokens::new();
+        partial.tokenize("ab").expect("Testing partial_tokenize, first tokenize");
+        partial.tokenize("c ").expect("Testing partial_tokenize, second tokenize");
+        partial.tokenize("d").expect("Testing partial_tokenize, third tokenize");
+        partial.finalize();
+
+        let full = parse("abc d").expect("Testing partial_tokenize, parse");
+        assert_eq!(partial, full);
     }
 }
