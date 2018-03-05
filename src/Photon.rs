@@ -4,17 +4,17 @@ pub struct Photon { // data structure is a linked list of these elements
     up: Option<usize>,
     right: Option<usize>,
     left: Option<usize>,
-    token: String,
+    token: Option<String>,
 }
 
 impl Photon {
-    fn new(token: String) -> Photon {
+    fn new(token: Option<String>) -> Photon {
         Photon{
             down: None,
             up: None,
             right: None,
             left: None,
-            token: token,
+            token: Some(token),
         }
     }
 }
