@@ -35,8 +35,7 @@ pub enum ParserError {
 
 #[derive(PartialEq)]
 enum TokenType {
-    New,
-    Tab,
+    Control,
     Pass,
     Return,
     Defined,
@@ -59,19 +58,22 @@ impl Token {
     fn derive_type(token: &String) -> TokenType {
         use Parser::TokenType;
 
-        const NEW_STR: &str = "\n";
-        const TAB_STR: &str = "\t";
         const PASS_STR: &str = "<";
         const RETURN_STR: &str = ".";
         const DEFINED_STR: &str = ":";
 
         match token.as_str() {
-            NEW_STR => TokenType::New,
-            TAB_STR => TokenType::Tab,
             PASS_STR => TokenType::Pass,
             RETURN_STR => TokenType::Return,
             DEFINED_STR => TokenType::Defined,
-            _ => TokenType::Photon,
+            _ => {
+                for chararacter in token {
+                    if !(chararacter == Parser::NEW || character == Parser::TAB) {
+                        return TokenType::Photon;
+                    }
+                };
+                return TokenType::Control;
+            },
         }
     }
 }
