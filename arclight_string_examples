@@ -36,7 +36,7 @@ el send send el send send el n t el send return el n t t el el return el el n t 
 
 build AST:
 break on n
-build first line, add to AST deque of indexes of elements with subelements to be added
+build first line, add to AST deque of indexes of photons with subphotons to be added
 
 
 
@@ -50,4 +50,4 @@ return   .
 defined  :
 new      \n
 tab      \t
-element  everything else
+photon  everything else

@@ -1,33 +1,34 @@
 use std::fmt;
 use std::collections::VecDeque;
 
-use Element::Element;
+use Photon::Photon;
+use Parser::parse;
 
 struct ArclightSyntaxTree {
-    elements: Vec<Element>,
+    photons: Vec<Photon>,
     marker_depth: usize,
-    marker: Option<Element>,
+    marker: Option<Photon>,
     open_indexes: VecDeque<usize>,
 }
 
 impl ArclightSyntaxTree {
     // fn row_tokens(&self) -> String {
     //     let mut row_tokens = String::new();
-    //     let mut current_element = &(self.marker);
+    //     let mut current_photon = &(self.marker);
         
-    //     while Some(current_element) {
+    //     while Some(current_photon) {
     //         if row_tokens.len() > 0 {
     //             row_tokens.push(' ');
     //         }
-    //         row_tokens.push(*current_element.token.clone());
-    //         current_element = &(*current_element.next_element());
+    //         row_tokens.push(*current_photon.token.clone());
+    //         current_photon = &(*current_photon.next_photon());
     //     }
     //     row_tokens
     // }
 
     pub fn new() -> ArclightSyntaxTree {
         ArclightSyntaxTree {
-            elements: Vec::new(),
+            photons: Vec::new(),
             marker_depth: 0,
             marker: None,
             open_indexes: VecDeque::new(),

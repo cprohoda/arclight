@@ -2,7 +2,7 @@
 
 // pub mod lexer;
 pub mod Parser;
-pub mod Element;
+pub mod Photon;
 // pub mod compiler;
 // pub mod repl;
 // pub mod branch;

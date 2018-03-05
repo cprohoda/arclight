@@ -1,5 +1,5 @@
 #[derive(PartialEq,Debug)]
-pub struct Element { // data structure is a linked list of these elements
+pub struct Photon { // data structure is a linked list of these elements
     down: Option<usize>,
     up: Option<usize>,
     right: Option<usize>,
@@ -7,9 +7,9 @@ pub struct Element { // data structure is a linked list of these elements
     token: String,
 }
 
-impl Element {
-    fn new(token: String) -> Element {
-        Element{
+impl Photon {
+    fn new(token: String) -> Photon {
+        Photon{
             down: None,
             up: None,
             right: None,
