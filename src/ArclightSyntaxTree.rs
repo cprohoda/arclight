@@ -2,13 +2,11 @@ use std::fmt;
 use std::collections::VecDeque;
 
 use Photon::Photon;
-use Parser::parse;
+use Parser::{parse,Tokens};
 
 struct ArclightSyntaxTree {
     photons: Vec<Photon>,
-    marker_depth: usize,
-    marker: Option<Photon>,
-    open_indexes: VecDeque<usize>,
+    marker: Vec<usize>,
 }
 
 impl ArclightSyntaxTree {
@@ -29,14 +27,36 @@ impl ArclightSyntaxTree {
     pub fn new() -> ArclightSyntaxTree {
         ArclightSyntaxTree {
             photons: Vec::new(),
-            marker_depth: 0,
-            marker: None,
-            open_indexes: VecDeque::new(),
+            marker: Vec::new(),
         }
     }
 
-    // fn build(&self, from: String) -> Self {
-    // }
+    pub fn build_at_marker(&self, tokens: Tokens) -> Result<Self,AstBuilderError> {
+        use Parser::TokenType;
+
+        let mut current_photon = self.marker.pop();
+        let mut marker_depth = 0i32;
+
+        for token in Tokens {
+            match token.token_type {
+                TokenType::Control => {
+                    // change current photon
+                },
+                TokenType::Pass => {
+                    // seperate photon
+                },
+                TokenType::Defined => {
+                    // append this token and next token to current photon's token
+                },
+                TokenType::Return => {
+                    // append this token and next token to current photon's token
+                },
+                TokenType::Photon => {
+                    // seperate photon
+                },
+            }
+        }
+    }
 
     // fn to_alf(filename: &str) -> Result<> {
 
@@ -45,6 +65,11 @@ impl ArclightSyntaxTree {
     // fn from_alf(filename: &str) -> Result<ArclightSyntaxTree,E> {
 
     // }
+}
+
+enum AstBuilderError {
+    Unknown,
+    UnmatchedDepth,
 }
 
 // impl fmt::Display for ArclightSyntaxTree {
