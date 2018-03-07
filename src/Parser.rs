@@ -31,6 +31,7 @@ pub enum ParserError {
     UnmatchedQuote,
     UnmatchedParen,
     UnterminatedBranch,
+    UnexpectedTab,
 }
 
 #[derive(PartialEq)]
@@ -142,10 +143,10 @@ impl Tokens {
                 }
             },
             NEW => {
-                self.control_handler(NEW)
+                self.control_handler(character, input_chars)
             },
             TAB => {
-                self.control_handler(TAB)
+                Err(ParserError::UnexpectedTab)
             },
             ESCAPE => {
                 self.accumulator.push(character);
@@ -172,17 +173,18 @@ impl Tokens {
         }
     }
 
-    fn control_handler(&mut self, control: char) -> Result<(),ParserError> {
-        let mut is_accumulator_control = true;
-        for character in self.accumulator.chars() {
-            if !(character == NEW || character == TAB) {
-                is_accumulator_control = false;
+    fn control_handler(&mut self, character: char, input_chars: &mut Chars) -> Result<(),ParserError> {
+        self.push_token_from_accumulator();
+        self.accumulator = character.to_string();
+        while let Some(character) = input_chars.next() {
+            if character == NEW || character == TAB {
+                self.accumulator.push(character);
+            } else {
+                self.push_token_from_accumulator();
+                self.character_match(character, input_chars);
+                break;
             }
         }
-        if !is_accumulator_control {
-            self.push_token_from_accumulator();
-        }
-        self.accumulator.push(control);
         Ok(())
     }
 
@@ -358,7 +360,7 @@ mod tests {
             token_type: TokenType::Photon,
         });
         expected.push_token(Token {
-            token: "\t\n\n".to_string(),
+            token: "\n\t".to_string(),
             token_type: TokenType::Control,
         });
         expected.push_token(Token {
@@ -366,8 +368,13 @@ mod tests {
             token_type: TokenType::Photon,
         });
 
-        let actual = parse("a\n\nb\t\n\na").expect("Testing control_parse, parse");
+        let actual = parse("a\n\nb\n\ta").expect("Testing control_parse, parse");
         assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn tab_without_new_parse() {
+        assert_eq!(ParserError::UnexpectedTab, parse("a\tb").unwrap_err());
     }
 
     #[test]
