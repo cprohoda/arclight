@@ -31,11 +31,11 @@ impl ArclightSyntaxTree {
         }
     }
 
-    pub fn build_at_marker(&self, tokens: Tokens) -> Result<Self,AstBuilderError> {
+    pub fn build_at_marker(&mut self, tokens: Tokens) -> Result<(),AstBuilderError> {
         use Parser::TokenType;
 
-        let mut current_photon = self.marker.pop();
-        let mut marker_depth = 0i32;
+        let current_photon = self.marker.pop();
+        let marker_depth = 0i32;
 
         for token in tokens {
             match token.token_type {
@@ -56,6 +56,7 @@ impl ArclightSyntaxTree {
                 },
             }
         }
+        Ok(())
     }
 
     // fn to_alf(filename: &str) -> Result<> {
