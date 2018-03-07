@@ -139,14 +139,10 @@ impl Tokens {
                 }
             },
             NEW => {
-                self.push_token_from_accumulator();
-                self.push_character_token(NEW);
-                Ok(())
+                self.control_handler(NEW)
             },
             TAB => {
-                self.push_token_from_accumulator();
-                self.push_character_token(TAB);
-                Ok(())
+                self.control_handler(TAB)
             },
             ESCAPE => {
                 self.accumulator.push(character);
@@ -171,6 +167,15 @@ impl Tokens {
                 Ok(())
             },
         }
+    }
+
+    fn control_handler(&mut self, control: char) -> Result<(),ParserError> {
+        for character in self.accumulator {
+            if !(character == NEW || character == TAB) {
+                self.push_token_from_accumulator();
+            }
+        }
+        self.push_character_token(control);
     }
 
     fn quote_match(&mut self, input_chars: &mut Chars) {
@@ -209,11 +214,9 @@ impl Tokens {
     }
 
     fn push_token_from_accumulator(&mut self) {
-        if self.accumulator != "".to_string() {
-            let accumulated_token = Token::new(self.accumulator.to_owned());
-            self.Tokens.push(accumulated_token);
-            self.accumulator = "".to_string();
-        };
+        let accumulated_token = Token::new(self.accumulator.to_owned());
+        self.Tokens.push(accumulated_token);
+        self.accumulator = "".to_string();
     }
 
     fn push_character_token(&mut self, character: char) {
@@ -304,6 +307,34 @@ mod tests {
         });
 
         let actual = parse("a<b").expect("Testing pass_parse, parse");
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn control_parse() {
+        let mut expected = Tokens::new();
+        expected.push_token(Token {
+            token: "a".to_string(),
+            token_type: TokenType::Photon,
+        });
+        expected.push_token(Token {
+            token: "\n\n".to_string(),
+            token_type: TokenType::Control,
+        });
+        expected.push_token(Token {
+            token: "b".to_string(),
+            token_type: TokenType::Photon,
+        });
+        expected.push_token(Token {
+            token: "\t\n\n".to_string(),
+            token_type: TokenType::Control,
+        });
+        expected.push_token(Token {
+            token: "a".to_string(),
+            token_type: TokenType::Photon,
+        });
+
+        let actual = parse("a\n\nb\t\n\na").expected("Testing control_parse, parse");
         assert_eq!(expected, actual);
     }
 
