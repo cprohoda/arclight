@@ -253,6 +253,30 @@ impl PartialEq for Tokens {
     }
 }
 
+impl Tokens {
+    pub fn iter(&self) -> TokensIter {
+        TokensIter {
+            tokens: self,
+            cur: 0,
+        }
+    }
+}
+
+pub struct TokensIter<'a> {
+    tokens: &'a Tokens,
+    cur: usize,
+}
+
+impl<'a> Iterator for TokensIter<'a> {
+    type Item = &'a Token;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let current_token = &self.tokens.Tokens[self.cur];
+        self.cur += 1;
+        Some(current_token)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use Parser::parse;

@@ -37,7 +37,7 @@ impl ArclightSyntaxTree {
         let current_photon = self.marker.pop();
         let marker_depth = 0i32;
 
-        for token in tokens {
+        for token in tokens.iter() {
             match token.token_type {
                 TokenType::Control => {
                     // change current photon
