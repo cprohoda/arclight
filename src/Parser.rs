@@ -76,6 +76,10 @@ impl Token {
             },
         }
     }
+
+    pub fn token_type(&self) -> &TokenType {
+        &self.token_type
+    }
 }
 
 impl fmt::Debug for Token {
