@@ -34,7 +34,7 @@ pub enum ParserError {
 }
 
 #[derive(PartialEq)]
-enum TokenType {
+pub enum TokenType {
     Control,
     Pass,
     Return,
@@ -42,7 +42,7 @@ enum TokenType {
     Photon,
 }
 
-struct Token {
+pub struct Token {
     token: String,
     token_type: TokenType,
 }
@@ -67,8 +67,8 @@ impl Token {
             RETURN_STR => TokenType::Return,
             DEFINED_STR => TokenType::Defined,
             _ => {
-                for chararacter in token {
-                    if !(chararacter == Parser::NEW || character == Parser::TAB) {
+                for character in token.chars() {
+                    if !(character == NEW || character == TAB) {
                         return TokenType::Photon;
                     }
                 };
@@ -81,8 +81,7 @@ impl Token {
 impl fmt::Debug for Token {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let token_type_name = match self.token_type {
-            TokenType::New => "New",
-            TokenType::Tab => "Tab",
+            TokenType::Control => "Control",
             TokenType::Pass => "Pass",
             TokenType::Return => "Return",
             TokenType::Defined => "Defined",
@@ -170,12 +169,13 @@ impl Tokens {
     }
 
     fn control_handler(&mut self, control: char) -> Result<(),ParserError> {
-        for character in self.accumulator {
+        for character in self.accumulator.chars() {
             if !(character == NEW || character == TAB) {
                 self.push_token_from_accumulator();
             }
         }
         self.push_character_token(control);
+        Ok(())
     }
 
     fn quote_match(&mut self, input_chars: &mut Chars) {
@@ -334,7 +334,7 @@ mod tests {
             token_type: TokenType::Photon,
         });
 
-        let actual = parse("a\n\nb\t\n\na").expected("Testing control_parse, parse");
+        let actual = parse("a\n\nb\t\n\na").expect("Testing control_parse, parse");
         assert_eq!(expected, actual);
     }
 

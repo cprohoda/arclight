@@ -14,7 +14,7 @@ impl Photon {
             up: None,
             right: None,
             left: None,
-            token: Some(token),
+            token: token,
         }
     }
 }
