@@ -169,12 +169,16 @@ impl Tokens {
     }
 
     fn control_handler(&mut self, control: char) -> Result<(),ParserError> {
+        let mut is_accumulator_control = true;
         for character in self.accumulator.chars() {
             if !(character == NEW || character == TAB) {
-                self.push_token_from_accumulator();
+                is_accumulator_control = false;
             }
         }
-        self.push_character_token(control);
+        if !is_accumulator_control {
+            self.push_token_from_accumulator();
+        }
+        self.accumulator.push(control);
         Ok(())
     }
 
