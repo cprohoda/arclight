@@ -407,8 +407,19 @@ mod tests {
     }
 
     #[test]
-    fn unmatched_quote_parse() { // TODO: implement
-        assert_eq!(ParserError::UnmatchedQuote, parse("a \"b").unwrap_err());
+    fn unmatched_quote_parse() { // Deal with unmatched quotes outside parser
+        let mut expected = Tokens::new();
+        expected.push_token(Token {
+            token: "a".to_string(),
+            token_type: TokenType::Photon,
+        });
+        expected.push_token(Token {
+            token: "\"b".to_string(),
+            token_type: TokenType::Photon,
+        });
+
+        let actual = parse("a \"b").expect("Testing unmatched_quote_parse, parse");
+        assert_eq!(expected, actual);
     }
 
     #[test]
