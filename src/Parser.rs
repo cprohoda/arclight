@@ -189,7 +189,6 @@ impl Tokens {
     }
 
     fn quote_match(&mut self, input_chars: &mut Chars) {
-        self.push_token_from_accumulator(); // TODO should this be a parsing error if accumulator != "".to_string()? Can we start a quote in the middle of a token?
         self.accumulator.push(QUOTE);
         while let Some(char_in_quote) = input_chars.next() {
             self.accumulator.push(char_in_quote);
@@ -198,7 +197,6 @@ impl Tokens {
                     self.accumulator.push(input_chars.next().unwrap());
                 },
                 QUOTE => {
-                    self.push_token_from_accumulator();
                     break;
                 },
                 _ => {},
