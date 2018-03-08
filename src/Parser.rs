@@ -163,9 +163,19 @@ impl Tokens {
                 Ok(())
             },
             PAREN_OPEN => {
-                self.paren_open_match(input_chars);
+                // self.push_token_from_accumulator();
+                self.push_character_token(PAREN_OPEN);
                 Ok(())
             },
+            PAREN_CLOSE => {
+                if self.accumulator == "".to_string() {
+                    Err(ParserError::UnexpectedSpace)
+                } else {
+                    self.push_token_from_accumulator();
+                    self.accumulator.push(PAREN_CLOSE);
+                    Ok(())
+                }
+            }
             _ => {
                 self.accumulator.push(character);
                 Ok(())
@@ -205,20 +215,21 @@ impl Tokens {
     }
 
     fn paren_open_match(&mut self, input_chars: &mut Chars) {
-        self.push_token_from_accumulator(); // TODO should it be parsing error? Similar to quote case above
-        self.accumulator.push(PAREN_OPEN);
-        while let Some(char_in_paren) = input_chars.next() {
-            match char_in_paren {
-                PAREN_CLOSE => {
-                    self.accumulator.push(char_in_paren);
-                    self.push_token_from_accumulator();
-                    break;
-                },
-                _ => {
-                    self.character_match(char_in_paren, input_chars);
-                },
-            };
-        };
+
+        // self.push_token_from_accumulator(); // TODO should it be parsing error? Similar to quote case above
+        // self.accumulator.push(PAREN_OPEN);
+        // while let Some(char_in_paren) = input_chars.next() {
+        //     match char_in_paren {
+        //         PAREN_CLOSE => {
+        //             self.accumulator.push(char_in_paren);
+        //             self.push_token_from_accumulator();
+        //             break;
+        //         },
+        //         _ => {
+        //             self.character_match(char_in_paren, input_chars);
+        //         },
+        //     };
+        // };
     }
 
     fn push_token_from_accumulator(&mut self) {
@@ -391,8 +402,8 @@ mod tests {
     }
 
     #[test]
-    fn unmatched_paren_parse() { // TODO: implement
-        assert_eq!(ParserError::UnmatchedParen, parse("(a (b )").unwrap_err());
+    fn space_before_paren_close_parse() { // Point here: the space before PAREN_CLOSE
+        assert_eq!(ParserError::UnexpectedSpace, parse("(a (b )").unwrap_err());
     }
 
     #[test]
