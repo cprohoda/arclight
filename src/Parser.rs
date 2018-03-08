@@ -386,8 +386,8 @@ mod tests {
     }
 
     #[test]
-    fn ending_space_parse() { // TODO: implement
-        assert_eq!(ParserError::UnterminatedBranch, parse("a ").unwrap_err());
+    fn ending_space_parse() { // Single ending space is just going to get ignored
+        assert_eq!(true, parse("a ").is_ok());
     }
 
     #[test]
