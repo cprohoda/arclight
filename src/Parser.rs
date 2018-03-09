@@ -163,7 +163,6 @@ impl Tokens {
                 Ok(())
             },
             PAREN_OPEN => {
-                // self.push_token_from_accumulator();
                 self.push_character_token(PAREN_OPEN);
                 Ok(())
             },
@@ -212,24 +211,6 @@ impl Tokens {
                 _ => {},
             }
         }
-    }
-
-    fn paren_open_match(&mut self, input_chars: &mut Chars) {
-
-        // self.push_token_from_accumulator(); // TODO should it be parsing error? Similar to quote case above
-        // self.accumulator.push(PAREN_OPEN);
-        // while let Some(char_in_paren) = input_chars.next() {
-        //     match char_in_paren {
-        //         PAREN_CLOSE => {
-        //             self.accumulator.push(char_in_paren);
-        //             self.push_token_from_accumulator();
-        //             break;
-        //         },
-        //         _ => {
-        //             self.character_match(char_in_paren, input_chars);
-        //         },
-        //     };
-        // };
     }
 
     fn push_token_from_accumulator(&mut self) {
