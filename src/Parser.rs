@@ -32,6 +32,7 @@ pub enum ParserError {
     UnmatchedParen,
     UnterminatedBranch,
     UnexpectedTab,
+    UnexpectedParen,
 }
 
 #[derive(PartialEq)]
@@ -163,8 +164,12 @@ impl Tokens {
                 Ok(())
             },
             PAREN_OPEN => {
-                self.push_character_token(PAREN_OPEN);
-                Ok(())
+                if self.accumulator != "".to_string() {
+                    Err(ParserError::UnexpectedParen)
+                } else {
+                    self.push_character_token(PAREN_OPEN);
+                    Ok(())
+                }
             },
             PAREN_CLOSE => {
                 if self.accumulator == "".to_string() {
@@ -385,6 +390,11 @@ mod tests {
     #[test]
     fn space_before_paren_close_parse() { // Point here: the space before PAREN_CLOSE
         assert_eq!(ParserError::UnexpectedSpace, parse("(a (b )").unwrap_err());
+    }
+
+    #[test]
+    fn no_space_before_paren_open_parse() {
+        assert_eq!(ParserError::UnexpectedParen, parse("a(").unwrap_err());
     }
 
     #[test]
