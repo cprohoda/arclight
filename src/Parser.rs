@@ -320,6 +320,18 @@ mod tests {
     }
 
     #[test]
+    fn modified_quote_parse() {
+        let mut expected = Tokens::new();
+        expected.push_token(Token {
+            token: "a\"b\"c".to_string(),
+            token_type: TokenType::Photon,
+        });
+
+        let actual = parse("a\"b\"c").expect("Testing modified_quote_parse, parse");
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
     fn pass_parse() {
         let mut expected = Tokens::new();
         expected.push_token(Token {
