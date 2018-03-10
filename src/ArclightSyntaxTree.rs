@@ -3,6 +3,7 @@ use std::collections::VecDeque;
 
 use Photon::Photon;
 use Parser::{parse,Tokens};
+use Parser::{DEFINED,RETURN};
 
 struct ArclightSyntaxTree {
     photons: Vec<Photon>,
@@ -46,10 +47,12 @@ impl ArclightSyntaxTree {
                     // seperate photon
                 },
                 TokenType::Defined => {
-                    // append this token and next token to current photon's token
+                    self.photons[current_photon].token.append(DEFINED);
+                    self.marker.append(current_photon);
                 },
                 TokenType::Return => {
-                    // append this token and next token to current photon's token
+                    self.photons[current_photon].token.append(RETURN);
+                    self.marker.append(current_photon);
                 },
                 TokenType::Photon => {
                     // seperate photon
