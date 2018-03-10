@@ -8,7 +8,7 @@ pub struct Photon {
 }
 
 impl Photon {
-    fn new(token: Option<String>) -> Photon {
+    pub fn new(token: Option<String>) -> Photon {
         Photon{
             down: None,
             up: None,

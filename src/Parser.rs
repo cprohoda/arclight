@@ -1,16 +1,16 @@
 use std::str::Chars;
 use std::fmt;
 
-const SPACE: char = ' ';
-const TAB: char = '\t';
-const NEW: char = '\n';
-const PASS: char = '<';
-const RETURN: char = '.';
-const DEFINED: char = ':';
-const ESCAPE: char = '\\';
-const QUOTE: char = '\"';
-const PAREN_OPEN: char = '(';
-const PAREN_CLOSE: char = ')';
+pub const SPACE: char = ' ';
+pub const TAB: char = '\t';
+pub const NEW: char = '\n';
+pub const PASS: char = '<';
+pub const RETURN: char = '.';
+pub const DEFINED: char = ':';
+pub const ESCAPE: char = '\\';
+pub const QUOTE: char = '\"';
+pub const PAREN_OPEN: char = '(';
+pub const PAREN_CLOSE: char = ')';
 
 pub fn parse(input: &str) -> Result<Tokens, ParserError> {
     let mut tokens = Tokens::new();

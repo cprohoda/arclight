@@ -104,3 +104,24 @@ enum AstBuilderError {
 
 //     // fn has_next(&self) -> Result<()> {}
 // }
+
+mod tests {
+    use ArclightSyntaxTree::ArclightSyntaxTree;
+    use Photon::Photon;
+
+    fn defined_build_test() {
+        let mut expected = ArclightSyntaxTree::new();
+        expected.photons.append(Photon {
+            token: "a.b",
+            up: None,
+            down: None,
+            left: None,
+            right: None,
+        });
+
+        let mut actual = ArclightSyntaxTree::new();
+        actual.build_at_marker(parse("a.b").expect("Testing defined_build_test, actual parse"));
+
+        assert_eq!(expected, actual);
+    }
+}
