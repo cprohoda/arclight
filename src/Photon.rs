@@ -1,5 +1,5 @@
 #[derive(PartialEq,Debug)]
-pub struct Photon { // data structure is a linked list of these elements
+pub struct Photon {
     down: Option<usize>,
     up: Option<usize>,
     right: Option<usize>,
