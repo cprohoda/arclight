@@ -276,9 +276,15 @@ impl<'a> Iterator for TokensIter<'a> {
     type Item = &'a Token;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let current_token = &self.tokens.Tokens[self.cur];
-        self.cur += 1;
-        Some(current_token)
+        if self.cur < self.tokens.Tokens.len() {
+            println!("{:?}",self.tokens.Tokens);
+            let current_token = &self.tokens.Tokens[self.cur];
+            println!("{:?}", current_token);
+            self.cur += 1;
+            Some(current_token)
+        } else {
+            None
+        }
     }
 }
 
