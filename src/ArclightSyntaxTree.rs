@@ -120,6 +120,7 @@ impl PartialEq for ArclightSyntaxTree {
 mod tests {
     use ArclightSyntaxTree::ArclightSyntaxTree;
     use Photon::Photon;
+    use Parser::parse;
 
     fn defined_build_test() {
         let mut expected = ArclightSyntaxTree::new();
