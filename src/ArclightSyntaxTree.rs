@@ -47,12 +47,12 @@ impl ArclightSyntaxTree {
                     // seperate photon
                 },
                 TokenType::Defined => {
-                    self.photons[current_photon].token.append(DEFINED);
-                    self.marker.append(current_photon);
+                    self.photons[current_photon].token.push(DEFINED);
+                    self.marker.push(current_photon);
                 },
                 TokenType::Return => {
-                    self.photons[current_photon].token.append(RETURN);
-                    self.marker.append(current_photon);
+                    self.photons[current_photon].token.push(RETURN);
+                    self.marker.push(current_photon);
                 },
                 TokenType::Photon => {
                     // seperate photon
@@ -123,7 +123,7 @@ mod tests {
 
     fn defined_build_test() {
         let mut expected = ArclightSyntaxTree::new();
-        expected.photons.append(Photon {
+        expected.photons.push(Photon {
             token: "a.b",
             up: None,
             down: None,
