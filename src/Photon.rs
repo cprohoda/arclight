@@ -4,11 +4,11 @@ pub struct Photon {
     up: Option<usize>,
     right: Option<usize>,
     left: Option<usize>,
-    token: Option<String>,
+    token: String,
 }
 
 impl Photon {
-    pub fn new(token: Option<String>) -> Photon {
+    pub fn new(token: String) -> Photon {
         Photon{
             down: None,
             up: None,
@@ -16,6 +16,10 @@ impl Photon {
             left: None,
             token: token,
         }
+    }
+
+    pub fn push_to_token(&mut self, partial_token: String) {
+        self.token.push_str(partial_token.as_str());
     }
 }
 
