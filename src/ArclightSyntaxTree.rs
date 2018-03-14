@@ -76,14 +76,26 @@ enum AstBuilderError {
     UnmatchedDepth,
 }
 
-// impl fmt::Display for ArclightSyntaxTree {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         while self.has_next() {
-//             if 
 
-//         }
-//     }
-// }
+impl fmt::Debug for ArclightSyntaxTree {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Photons {:?}", self.photons)
+    }
+}
+
+impl PartialEq for ArclightSyntaxTree {
+    fn eq(&self, other: &ArclightSyntaxTree) -> bool {
+        let mut equality: bool = self.photons.len() == other.photons.len();
+        let mut iter_other = other.photons.iter();
+
+        for self_token in &self.photons {
+            if !equality { break; }
+            equality = self_token == iter_other.next().unwrap();
+        }
+
+        equality
+    }
+}
 
 // impl Iterator for ArclightSyntaxTree {
 //     fn next(self) -> Result<Option<usize>, E> {
