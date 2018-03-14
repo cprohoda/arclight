@@ -277,11 +277,8 @@ impl<'a> Iterator for TokensIter<'a> {
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.cur < self.tokens.Tokens.len() {
-            println!("{:?}",self.tokens.Tokens);
-            let current_token = &self.tokens.Tokens[self.cur];
-            println!("{:?}", current_token);
             self.cur += 1;
-            Some(current_token)
+            Some(&self.tokens.Tokens[self.cur])
         } else {
             None
         }
