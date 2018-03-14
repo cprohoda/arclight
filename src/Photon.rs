@@ -1,10 +1,10 @@
 #[derive(PartialEq,Debug)]
 pub struct Photon {
-    down: Option<usize>,
-    up: Option<usize>,
-    right: Option<usize>,
-    left: Option<usize>,
-    token: String,
+    pub down: Option<usize>,
+    pub up: Option<usize>,
+    pub right: Option<usize>,
+    pub left: Option<usize>,
+    pub token: String,
 }
 
 impl Photon {

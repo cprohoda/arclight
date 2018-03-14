@@ -63,6 +63,10 @@ impl ArclightSyntaxTree {
         Ok(())
     }
 
+    pub fn len(&self) -> usize {
+        self.photons.len()
+    }
+
     // fn to_alf(filename: &str) -> Result<> {
 
     // }
@@ -98,25 +102,37 @@ impl PartialEq for ArclightSyntaxTree {
     }
 }
 
-// impl Iterator for ArclightSyntaxTree {
-//     fn next(self) -> Result<Option<usize>, E> {
-//         // down if Some(marker.down)
-//         //     self.marker_depth += 1;
-//         //     self.marker = self.marker.down
-//         //     Result<Success>
-//         // else right if Some(marker.right)
-//         //     self.marker = self.marker.right
-//         //     Result<Success>
-//         // else right if Some(marker.up.right)
-//         //     marker_depth -= 1
-//         //     self.marker = self.marker.up.right
-//         //     Result<Success>
-//         // else
-//         //     Result<Failure>
-//     }
+pub struct ArclightSyntaxTreeIter<'ast> {
+    ast: &'ast ArclightSyntaxTree,
+    cur: usize,
+}
 
-//     // fn has_next(&self) -> Result<()> {}
-// }
+impl<'ast> Iterator for ArclightSyntaxTreeIter<'ast> {
+    type Item = &'ast Photon;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.cur < self.ast.len() { // relies on inability to remove photons without full AST rebuild
+            if let Some(down_index) = self.ast.photons[self.cur].down {
+                self.cur = down_index;
+                Some(&self.ast.photons[down_index])
+            } else if let Some(right_index) = self.ast.photons[self.cur].right {
+                self.cur = right_index;
+                Some(&self.ast.photons[right_index])
+            } else if let Some(up_index) = self.ast.photons[self.cur].up {
+                if let Some(up_right_index) = self.ast.photons[up_index].right {
+                    self.cur = up_right_index;
+                    Some(&self.ast.photons[up_right_index])
+                } else {
+                    None
+                }
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+}
 
 mod tests {
     use ArclightSyntaxTree::ArclightSyntaxTree;
