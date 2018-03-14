@@ -27,15 +27,15 @@ impl ArclightSyntaxTree {
 
     pub fn new() -> ArclightSyntaxTree {
         ArclightSyntaxTree {
-            photons: Vec::new(),
-            marker: Vec::new(),
+            photons: vec![Photon::new("".to_string())],
+            marker: vec![0],
         }
     }
 
     pub fn build_at_marker(&mut self, tokens: Tokens) -> Result<(),AstBuilderError> {
         use Parser::TokenType;
 
-        let current_photon = self.marker.pop();
+        let current_photon = self.marker.pop().unwrap();
         let marker_depth = 0i32;
 
         for token in tokens.iter() {
@@ -47,15 +47,16 @@ impl ArclightSyntaxTree {
                     // seperate photon
                 },
                 TokenType::Defined => {
-                    self.photons[current_photon].token.push(DEFINED);
+                    self.photons[current_photon].push_to_token(DEFINED.to_string());
                     self.marker.push(current_photon);
                 },
                 TokenType::Return => {
-                    self.photons[current_photon].token.push(RETURN);
+                    self.photons[current_photon].push_to_token(RETURN.to_string());
                     self.marker.push(current_photon);
                 },
                 TokenType::Photon => {
-                    // seperate photon
+                    self.photons[current_photon].push_to_token(token.token_str().to_string());
+                    self.marker.push(current_photon);
                 },
             }
         }
@@ -122,9 +123,10 @@ mod tests {
     use Photon::Photon;
     use Parser::parse;
 
+    #[test]
     fn defined_build_test() {
         let mut expected = ArclightSyntaxTree::new();
-        expected.photons.push(Photon::new("a.b".to_string()));
+        expected.photons[0].push_to_token("a.b".to_string());
 
         let mut actual = ArclightSyntaxTree::new();
         actual.build_at_marker(parse("a.b").expect("Testing defined_build_test, actual parse"));
