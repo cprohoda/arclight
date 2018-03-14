@@ -124,7 +124,7 @@ mod tests {
 
     fn defined_build_test() {
         let mut expected = ArclightSyntaxTree::new();
-        expected.photons.push(Photon::new(Some("a.b".to_string())));
+        expected.photons.push(Photon::new("a.b".to_string()));
 
         let mut actual = ArclightSyntaxTree::new();
         actual.build_at_marker(parse("a.b").expect("Testing defined_build_test, actual parse"));
