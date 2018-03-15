@@ -67,6 +67,13 @@ impl ArclightSyntaxTree {
         self.photons.len()
     }
 
+    pub fn iter(&self, from: usize) -> ArclightSyntaxTreeIter {
+        ArclightSyntaxTreeIter{
+            ast: self,
+            cur: from,
+        }
+    }
+
     // fn to_alf(filename: &str) -> Result<> {
 
     // }
