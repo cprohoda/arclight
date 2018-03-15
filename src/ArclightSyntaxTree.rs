@@ -35,7 +35,7 @@ impl ArclightSyntaxTree {
     pub fn build_at_marker(&mut self, tokens: Tokens) -> Result<(),AstBuilderError> {
         use Parser::TokenType;
 
-        let current_photon = self.marker.pop().unwrap();
+        let current_photon_index = self.marker.pop().unwrap();
         let marker_depth = 0i32;
 
         for token in tokens.iter() {
@@ -47,16 +47,16 @@ impl ArclightSyntaxTree {
                     // seperate photon
                 },
                 TokenType::Defined => {
-                    self.photons[current_photon].push_to_token(DEFINED.to_string());
-                    self.marker.push(current_photon);
+                    self.photons[current_photon_index].push_to_token(DEFINED.to_string());
+                    self.marker.push(current_photon_index);
                 },
                 TokenType::Return => {
-                    self.photons[current_photon].push_to_token(RETURN.to_string());
-                    self.marker.push(current_photon);
+                    self.photons[current_photon_index].push_to_token(RETURN.to_string());
+                    self.marker.push(current_photon_index);
                 },
                 TokenType::Photon => {
-                    self.photons[current_photon].push_to_token(token.token_str().to_string());
-                    self.marker.push(current_photon);
+                    self.photons[current_photon_index].push_to_token(token.token_str().to_string());
+                    self.marker.push(current_photon_index);
                 },
             }
         }
