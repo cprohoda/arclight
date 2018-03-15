@@ -67,7 +67,11 @@ impl ArclightSyntaxTree {
         self.photons.len()
     }
 
-    pub fn iter(&self, from: usize) -> ArclightSyntaxTreeIter {
+    pub fn iter(&self) -> ArclightSyntaxTreeIter {
+        self.iter_from(0)
+    }
+
+    pub fn iter_from(&self, from: usize) -> ArclightSyntaxTreeIter {
         ArclightSyntaxTreeIter{
             ast: self,
             cur: from,
