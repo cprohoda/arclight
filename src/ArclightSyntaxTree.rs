@@ -1,5 +1,6 @@
 use std::fmt;
 use std::collections::VecDeque;
+use std::cmp::max;
 
 use Photon::Photon;
 use Parser::{parse,Tokens};
@@ -36,12 +37,24 @@ impl ArclightSyntaxTree {
         use Parser::TokenType;
 
         let current_photon_index = self.marker.pop().unwrap();
-        let marker_depth = 0i32;
 
         for token in tokens.iter() {
             match *token.token_type() {
                 TokenType::Control => {
                     // change current photon
+                    // decide the marker_depth
+                    let target_depth = max(0, token.token_str().to_string().replace("\n", "").chars().count()-1);
+                    // find a photon with this depth
+                    while let Some(current_photon) =  {
+                        // find closest photon with Some(token) at target_depth
+                        for marker_depth in 0..target_depth {
+                            if Some(self.photons[current_photon.down].token) {
+                                // set current_photon_index to current_photon.down
+                            } else {
+                                // keep searching, probably
+                            }
+                        }
+                    }
                 },
                 TokenType::Pass => {
                     // seperate photon
