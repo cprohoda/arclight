@@ -36,23 +36,17 @@ impl ArclightSyntaxTree {
     pub fn build_at_marker(&mut self, tokens: Tokens) -> Result<(),AstBuilderError> {
         use Parser::TokenType;
 
-        let current_photon_index = self.marker.pop().unwrap();
+        let mut current_photon_index = self.marker.pop().unwrap();
 
         for token in tokens.iter() {
             match *token.token_type() {
                 TokenType::Control => {
-                    // change current photon
-                    // decide the marker_depth
-                    let target_depth = max(0, token.token_str().to_string().replace("\n", "").chars().count()-1);
-                    // find a photon with this depth
-                    while let Some(current_photon) =  {
-                        // find closest photon with Some(token) at target_depth
-                        for marker_depth in 0..target_depth {
-                            if Some(self.photons[current_photon.down].token) {
-                                // set current_photon_index to current_photon.down
-                            } else {
-                                // keep searching, probably
-                            }
+                    let number_tabs = token.token_str().to_string().replace("\n", "").chars().count()-1;
+                    let target_depth = max(0, number_tabs);
+                    // check marked locations for an empty photon at the expected depth
+                    for marker in self.marker {
+                        if self.photons[marker].token == "".to_string() && self.marker_depth(marker) == target_depth { // TODO: Also need to check if it's correctly placed
+                            current_photon_index = marker;
                         }
                     }
                 },
