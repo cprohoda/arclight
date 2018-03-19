@@ -44,9 +44,9 @@ impl ArclightSyntaxTree {
                     let number_tabs = token.token_str().to_string().replace("\n", "").chars().count()-1;
                     let target_depth = max(0, number_tabs);
                     // check marked locations for an empty photon at the expected depth
-                    for marker in self.marker {
-                        if self.photons[marker].token == "".to_string() && self.marker_depth(marker) == target_depth { // TODO: Also need to check if it's correctly placed
-                            current_photon_index = marker;
+                    for marker in &self.marker {
+                        if self.photons[*marker].token == "".to_string() && self.marker_depth(*marker).unwrap() == target_depth { // TODO: Also need to check if it's correctly placed
+                            current_photon_index = *marker;
                         }
                     }
                 },
@@ -85,6 +85,25 @@ impl ArclightSyntaxTree {
         }
     }
 
+    pub fn marker_depth(&self, marker: usize) -> Result<usize,AstBuilderError> {
+        let mut marker_depth = 0usize;
+        if self.photons.get(marker).is_none() {
+            return Err(AstBuilderError::MarkerNotFound);
+        }
+        let mut index = marker;
+        loop {
+            if self.photons[index].left.is_some() {
+                index = self.photons[index].left.unwrap();
+            } else if self.photons[index].up.is_some() {
+                index = self.photons[index].up.unwrap();
+                marker_depth += 1;
+            } else {
+                break;
+            }
+        }
+        Ok(marker_depth)
+    }
+
     // fn to_alf(filename: &str) -> Result<> {
 
     // }
@@ -94,9 +113,11 @@ impl ArclightSyntaxTree {
     // }
 }
 
+#[derive(Debug)]
 enum AstBuilderError {
     Unknown,
     UnmatchedDepth,
+    MarkerNotFound,
 }
 
 
