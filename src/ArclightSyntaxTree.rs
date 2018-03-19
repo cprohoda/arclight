@@ -191,4 +191,12 @@ mod tests {
 
         assert_eq!(expected, actual);
     }
+
+    #[test]
+    fn pass_build_test() {
+        let mut actual = ArclightSyntaxTree::new();
+        actual.build_at_marker(parse("a<\n\tb").expect("Testing pass_build_test, actual parse"));
+
+        assert_eq!(actual.photons[actual.photons[0].down.unwrap()].token, "b".to_string());
+    }
 }
