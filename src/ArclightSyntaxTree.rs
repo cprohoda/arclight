@@ -51,7 +51,10 @@ impl ArclightSyntaxTree {
                     }
                 },
                 TokenType::Pass => {
-                    // seperate photon
+                    self.photons.push(Photon::new("".to_string()));
+                    let last_photon_index = self.photons.len() - 1;
+                    self.photons[last_photon_index].up = Some(current_photon_index);
+                    self.photons[current_photon_index].down = Some(last_photon_index);
                 },
                 TokenType::Defined => {
                     self.photons[current_photon_index].push_to_token(DEFINED.to_string());
