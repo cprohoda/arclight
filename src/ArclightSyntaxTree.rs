@@ -199,4 +199,14 @@ mod tests {
 
         assert_eq!(actual.photons[actual.photons[0].down.unwrap()].token, "b".to_string());
     }
+
+    #[test]
+    fn pass_delayed_build_test() {
+        let mut actual = ArclightSyntaxTree::new();
+        actual.build_at_marker(parse("a< b c\n\td").expect("Testing pass_delayed_build_test, actual parse"));
+
+        assert_eq!(actual.photons[actual.photons[0].down.unwrap()].token, "d".to_string());
+        assert_eq!(actual.photons[actual.photons[0].right.unwrap()].token, "b".to_string());
+        assert_eq!(actual.photons[actual.photons[actual.photons[0].right.unwrap()].right.unwrap()].token, "c".to_string());
+    }
 }
