@@ -41,8 +41,8 @@ impl ArclightSyntaxTree {
         for token in tokens.iter() {
             match *token.token_type() {
                 TokenType::Control => {
-                    let number_tabs = token.token_str().to_string().replace("\n", "").chars().count()-1;
-                    let target_depth = max(0, number_tabs);
+                    let tab_split = token.token_str().to_string().replace("\n", "").chars().count();
+                    let target_depth = max(1, tab_split)-1;
                     // check marked locations for an empty photon at the expected depth
                     for marker in &self.marker {
                         if self.photons[*marker].token == "".to_string() && self.marker_depth(*marker).unwrap() == target_depth { // TODO: Also need to check if it's correctly placed
