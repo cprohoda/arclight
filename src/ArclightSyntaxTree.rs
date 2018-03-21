@@ -209,4 +209,18 @@ mod tests {
         assert_eq!(actual.photons[actual.photons[0].right.unwrap()].token, "b".to_string());
         assert_eq!(actual.photons[actual.photons[actual.photons[0].right.unwrap()].right.unwrap()].token, "c".to_string());
     }
+
+    #[test]
+    fn ast_iter_test() {
+        let mut actual = ArclightSyntaxTree::new();
+        actual.build_at_marker(parse("a b c\n\td").expect("Testing pass_delayed_build_test, actual parse"));
+
+        let mut actual_iter = actual.iter();
+
+        assert_eq!(actual_iter.next().unwrap().token, "a");
+        assert_eq!(actual_iter.next().unwrap().token, "d");
+        assert_eq!(actual_iter.next().unwrap().token, "b");
+        assert_eq!(actual_iter.next().unwrap().token, "c");
+        assert_eq!(actual_iter.next(), None);
+    }
 }
