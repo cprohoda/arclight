@@ -203,7 +203,7 @@ mod tests {
     #[test]
     fn pass_delayed_build_test() {
         let mut actual = ArclightSyntaxTree::new();
-        actual.build_at_marker(parse("a< b c\n\td").expect("Testing pass_delayed_build_test, actual parse"));
+        actual.build_at_marker(parse("a< b c\n\td").expect("Testing pass_delayed_build_test, actual parse")); // TODO: this creates a space after the pass. Still works, but should fix the parse algorithm
 
         assert_eq!(actual.photons[actual.photons[0].down.unwrap()].token, "d".to_string());
         assert_eq!(actual.photons[actual.photons[0].right.unwrap()].token, "b".to_string());
