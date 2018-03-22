@@ -92,7 +92,7 @@ impl ArclightSyntaxTree {
     pub fn iter_from(&self, from: usize) -> ArclightSyntaxTreeIter {
         ArclightSyntaxTreeIter{
             ast: self,
-            cur: from,
+            cur: Some(from),
         }
     }
 
@@ -154,30 +154,29 @@ impl PartialEq for ArclightSyntaxTree {
 
 pub struct ArclightSyntaxTreeIter<'ast> {
     ast: &'ast ArclightSyntaxTree,
-    cur: usize,
+    cur: Option<usize>,
 }
 
 impl<'ast> Iterator for ArclightSyntaxTreeIter<'ast> {
     type Item = &'ast Photon;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.cur < self.ast.len() { // relies on inability to remove photons without full AST rebuild
-            if let Some(down_index) = self.ast.photons[self.cur].down {
-                self.cur = down_index;
-                Some(&self.ast.photons[down_index])
-            } else if let Some(right_index) = self.ast.photons[self.cur].right {
-                self.cur = right_index;
-                Some(&self.ast.photons[right_index])
-            } else if let Some(up_index) = self.ast.photons[self.cur].up {
+        if self.cur.is_some() && self.cur.unwrap() < self.ast.len() { // relies on inability to remove photons without full AST rebuild
+            let current = &self.ast.photons[self.cur.unwrap()];
+            if let Some(down_index) = current.down {
+                self.cur = Some(down_index);
+            } else if let Some(right_index) = current.right {
+                self.cur = Some(right_index);
+            } else if let Some(up_index) = current.up {
                 if let Some(up_right_index) = self.ast.photons[up_index].right {
-                    self.cur = up_right_index;
-                    Some(&self.ast.photons[up_right_index])
+                    self.cur = Some(up_right_index);
                 } else {
-                    None
+                    self.cur = None;
                 }
             } else {
-                None
+                self.cur = None;
             }
+            Some(current)
         } else {
             None
         }
