@@ -65,8 +65,16 @@ impl ArclightSyntaxTree {
                     self.marker.push(current_photon_index);
                 },
                 TokenType::Photon => {
-                    self.photons[current_photon_index].push_to_token(token.token_str().to_string());
-                    self.marker.push(current_photon_index);
+                    if self.photons[current_photon_index].token == "".to_string() {
+                        self.photons[current_photon_index].push_to_token(token.token_str().to_string());
+                    } else {
+                        self.photons.push(Photon::new("".to_string()));
+                        let last_photon_index = self.photons.len() - 1;
+                        self.photons[last_photon_index].left = Some(current_photon_index);
+                        self.photons[current_photon_index].right = Some(last_photon_index);
+                        current_photon_index = last_photon_index;
+                        self.photons[current_photon_index].push_to_token(token.token_str().to_string());
+                    }
                 },
             }
         }
@@ -213,7 +221,7 @@ mod tests {
     #[test]
     fn ast_iter_test() {
         let mut actual = ArclightSyntaxTree::new();
-        actual.build_at_marker(parse("a b c\n\td").expect("Testing pass_delayed_build_test, actual parse"));
+        actual.build_at_marker(parse("a< b c\n\td").expect("Testing pass_delayed_build_test, actual parse"));
 
         let mut actual_iter = actual.iter();
 
