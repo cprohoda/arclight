@@ -3,6 +3,7 @@
 // pub mod lexer;
 pub mod Parser;
 pub mod Photon;
+pub mod Generator;
 // pub mod compiler;
 // pub mod repl;
 // pub mod branch;

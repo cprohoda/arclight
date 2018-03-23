@@ -6,7 +6,7 @@ use Photon::Photon;
 use Parser::{parse,Tokens};
 use Parser::{DEFINED,RETURN};
 
-struct ArclightSyntaxTree {
+pub struct ArclightSyntaxTree {
     photons: Vec<Photon>,
     marker: Vec<usize>,
 }
@@ -125,7 +125,7 @@ impl ArclightSyntaxTree {
 }
 
 #[derive(Debug)]
-enum AstBuilderError {
+pub enum AstBuilderError {
     Unknown,
     UnmatchedDepth,
     MarkerNotFound,
