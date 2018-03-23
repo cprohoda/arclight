@@ -115,6 +115,50 @@ impl ArclightSyntaxTree {
         Ok(marker_depth)
     }
 
+    pub fn up(&mut self) -> Result<(),()> {
+        let current_photon_index = self.marker.pop().unwrap();
+        if self.photons.get(current_photon_index).unwrap().up.is_some() {
+            self.marker.push(self.photons.get(current_photon_index).unwrap().up.unwrap());
+            Ok(())
+        } else {
+            self.marker.push(current_photon_index);
+            Err(())
+        }
+    }
+
+    pub fn down(&mut self) -> Result<(),()> {
+        let current_photon_index = self.marker.pop().unwrap();
+        if self.photons.get(current_photon_index).unwrap().down.is_some() {
+            self.marker.push(self.photons.get(current_photon_index).unwrap().down.unwrap());
+            Ok(())
+        } else {
+            self.marker.push(current_photon_index);
+            Err(())
+        }
+    }
+
+    pub fn left(&mut self) -> Result<(),()> {
+        let current_photon_index = self.marker.pop().unwrap();
+        if self.photons.get(current_photon_index).unwrap().left.is_some() {
+            self.marker.push(self.photons.get(current_photon_index).unwrap().left.unwrap());
+            Ok(())
+        } else {
+            self.marker.push(current_photon_index);
+            Err(())
+        }
+    }
+
+    pub fn right(&mut self) -> Result<(),()> {
+        let current_photon_index = self.marker.pop().unwrap();
+        if self.photons.get(current_photon_index).unwrap().right.is_some() {
+            self.marker.push(self.photons.get(current_photon_index).unwrap().right.unwrap());
+            Ok(())
+        } else {
+            self.marker.push(current_photon_index);
+            Err(())
+        }
+    }
+
     // fn to_alf(filename: &str) -> Result<> {
 
     // }
