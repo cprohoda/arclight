@@ -37,4 +37,12 @@ mod tests {
 
         assert_eq!("fn main() {\nprintln!(\"Hello world!\");\n}".to_string(), generate(hello_world).expect("Testing hello_world_test, hello_world generate"));
     }
+
+    #[test]
+    fn hello_world_two_arg_test() {
+        let mut hello_world = ArclightSyntaxTree::new();
+        hello_world.build_at_marker(parse("println! \"{}\" \"Hello world!\"").expect("Testing hello_world_two_arg_test, hello_world parse"));
+
+        assert_eq!("fn main() {\nprintln!(\"{}\",\"Hello world!\");\n}".to_string(), generate(hello_world).expect("Testing hello_world_two_arg_test, hello_world_generate"));
+    }
 }
