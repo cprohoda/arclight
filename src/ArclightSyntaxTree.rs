@@ -158,14 +158,6 @@ impl ArclightSyntaxTree {
             Err(())
         }
     }
-
-    // fn to_alf(filename: &str) -> Result<> {
-
-    // }
-
-    // fn from_alf(filename: &str) -> Result<ArclightSyntaxTree,E> {
-
-    // }
 }
 
 #[derive(Debug)]
