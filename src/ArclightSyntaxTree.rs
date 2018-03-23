@@ -12,20 +12,6 @@ pub struct ArclightSyntaxTree {
 }
 
 impl ArclightSyntaxTree {
-    // fn row_tokens(&self) -> String {
-    //     let mut row_tokens = String::new();
-    //     let mut current_photon = &(self.marker);
-        
-    //     while Some(current_photon) {
-    //         if row_tokens.len() > 0 {
-    //             row_tokens.push(' ');
-    //         }
-    //         row_tokens.push(*current_photon.token.clone());
-    //         current_photon = &(*current_photon.next_photon());
-    //     }
-    //     row_tokens
-    // }
-
     pub fn new() -> ArclightSyntaxTree {
         ArclightSyntaxTree {
             photons: vec![Photon::new("".to_string())],
@@ -115,48 +101,73 @@ impl ArclightSyntaxTree {
         Ok(marker_depth)
     }
 
-    pub fn up(&mut self) -> Result<(),()> {
+    pub fn up(&mut self) -> Option<()> {
         let current_photon_index = self.marker.pop().unwrap();
         if self.photons.get(current_photon_index).unwrap().up.is_some() {
             self.marker.push(self.photons.get(current_photon_index).unwrap().up.unwrap());
-            Ok(())
+            Some(())
         } else {
             self.marker.push(current_photon_index);
-            Err(())
+            None
         }
     }
 
-    pub fn down(&mut self) -> Result<(),()> {
+    pub fn down(&mut self) -> Option<()> {
         let current_photon_index = self.marker.pop().unwrap();
         if self.photons.get(current_photon_index).unwrap().down.is_some() {
             self.marker.push(self.photons.get(current_photon_index).unwrap().down.unwrap());
-            Ok(())
+            Some(())
         } else {
             self.marker.push(current_photon_index);
-            Err(())
+            None
         }
     }
 
-    pub fn left(&mut self) -> Result<(),()> {
+    pub fn left(&mut self) -> Option<()> {
         let current_photon_index = self.marker.pop().unwrap();
         if self.photons.get(current_photon_index).unwrap().left.is_some() {
             self.marker.push(self.photons.get(current_photon_index).unwrap().left.unwrap());
-            Ok(())
+            Some(())
         } else {
             self.marker.push(current_photon_index);
-            Err(())
+            None
         }
     }
 
-    pub fn right(&mut self) -> Result<(),()> {
+    pub fn right(&mut self) -> Option<()> {
         let current_photon_index = self.marker.pop().unwrap();
         if self.photons.get(current_photon_index).unwrap().right.is_some() {
             self.marker.push(self.photons.get(current_photon_index).unwrap().right.unwrap());
-            Ok(())
+            Some(())
         } else {
             self.marker.push(current_photon_index);
-            Err(())
+            None
         }
+    }
+
+    fn marker_token(&mut self) -> &str {
+        let current_photon_index = self.marker.pop().unwrap();
+        let token_str = self.photons.get(current_photon_index).unwrap().token.as_str();
+
+        self.marker.push(current_photon_index);
+        token_str
+    }
+
+
+    fn row_tokens(&mut self) -> String {
+        let mut row_tokens = String::new();
+
+        loop {
+            if row_tokens.len() > 0 {
+                row_tokens.push_str(" ");
+            }
+            row_tokens.push_str(self.marker_token());
+
+            if self.right().is_none() {
+                break;
+            }
+        }
+        row_tokens
     }
 }
 
