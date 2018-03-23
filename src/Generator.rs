@@ -20,6 +20,21 @@ pub fn generate(ast: ArclightSyntaxTree) -> Result<String,ArclightGeneratorError
     Ok(compiled)
 }
 
+#[derive(Debug)]
 pub enum ArclightGeneratorError {
     Unknown,
+}
+
+mod tests {
+    use ArclightSyntaxTree::ArclightSyntaxTree;
+    use Parser::parse;
+    use Generator::generate;
+
+    #[test]
+    fn hello_world_test() {
+        let mut hello_world = ArclightSyntaxTree::new();
+        hello_world.build_at_marker(parse("println! \"Hello world!\"").expect("Testing hello_world_test, hello_world parse"));
+
+        assert_eq!("fn main() {\nprintln!(\"Hello world!\");\n}".to_string(), generate(hello_world).expect("Testing hello_world_test, hello_world generate"));
+    }
 }
