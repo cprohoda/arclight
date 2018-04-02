@@ -1,15 +1,31 @@
 use ArclightSyntaxTree::ArclightSyntaxTree;
 use Photon::Photon;
 
+const LIFETIME: &str = "lifetime";
+const FN: &str = "fn";
+const LET: &str = "let";
+const REF: &str = "&";
+const MUT: &str = "mut";
+
 pub fn generate(ast: ArclightSyntaxTree) -> Result<String,ArclightGeneratorError> {
     let mut compiled = "".to_string();
     compiled.push_str("fn main() {\n");
 
     for photon in ast.iter() {
-        match photon.token {
+        match photon.token.as_str() {
+            FN => {
+            },
+            LET => {
+            },
+            LIFETIME => {
+            },
+            REF => {
+            },
+            MUT => {
+            },
             _ => {
                 generic_photon(&photon, &mut compiled);
-            }
+            },
         }
     }
     
