@@ -1,23 +1,32 @@
 use ArclightSyntaxTree::ArclightSyntaxTree;
+use Photon::Photon;
 
 pub fn generate(ast: ArclightSyntaxTree) -> Result<String,ArclightGeneratorError> {
     let mut compiled = "".to_string();
     compiled.push_str("fn main() {\n");
 
     for photon in ast.iter() {
-        if photon.left.is_none() {
-            compiled.push_str(&photon.token);
-            compiled.push_str("(");
-        } else {
-            if compiled.chars().last().unwrap() != '(' {
-                compiled.push_str(",");
+        match photon.token {
+            _ => {
+                generic_photon(&photon, &mut compiled);
             }
-            compiled.push_str(&photon.token);
         }
     }
     
     compiled.push_str(");\n}");
     Ok(compiled)
+}
+
+fn generic_photon(photon: &Photon, compiled: &mut String) {
+    if photon.left.is_none() {
+        compiled.push_str(&photon.token);
+        compiled.push_str("(");
+    } else {
+        if compiled.chars().last().unwrap() != '(' {
+            compiled.push_str(",");
+        }
+        compiled.push_str(&photon.token);
+    }
 }
 
 #[derive(Debug)]
