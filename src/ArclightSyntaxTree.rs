@@ -208,7 +208,7 @@ impl<'ast> Iterator for ArclightSyntaxTreeIter<'ast> {
     type Item = &'ast Photon;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.cur.is_some() && self.cur.unwrap() < self.ast.len() { // relies on inability to remove photons without full AST rebuild
+        if self.cur.is_some() && self.cur.unwrap() < self.ast.len() { // TODO relies on inability to remove photons without full AST rebuild. Memory leak, I guess
             let current = &self.ast.photons[self.cur.unwrap()];
             if let Some(down_index) = current.down {
                 self.cur = Some(down_index);
