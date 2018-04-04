@@ -251,7 +251,19 @@ impl<'ast> Iterator for ArclightSyntaxTreePartialIter<'ast> {
     type Item = &'ast Photon;
 
     fn next(&mut self) -> Option<Self::Item> {
-
+        if self.cur.is_some() && self.cur.unwrap() < self.ast.len() {
+            let current = &self.ast.photons[self.cur.unwrap()];
+            if let Some(down_index) = current.down {
+                self.cur = Some(down_index);
+            } else if let Some(right_index) = current.right {
+                self.cur = Some(right_index);
+            } else {
+                self.cur = None;
+            }
+            Some(current)
+        } else {
+            None
+        }
     }
 }
 
