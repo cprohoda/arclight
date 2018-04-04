@@ -80,6 +80,7 @@ impl ArclightSyntaxTree {
         ArclightSyntaxTreePartialIter {
             ast: self,
             cur: Some(from),
+            last: Some(from),
         }
     }
 
@@ -245,6 +246,24 @@ impl<'ast> Iterator for ArclightSyntaxTreeIter<'ast> {
 pub struct ArclightSyntaxTreePartialIter<'ast> {
     ast: &'ast ArclightSyntaxTree,
     cur: Option<usize>,
+    last: Option<usize>,
+}
+
+impl<'ast> ArclightSyntaxTreePartialIter<'ast> {
+    pub fn resume(&mut self) -> Option<&'ast Photon> {
+        let current = &self.ast.photons[self.last.unwrap()];
+        if let Some(up_index) = current.up {
+            if let Some(up_right_index) = self.ast.photons[up_index].right {
+                self.cur = Some(up_right_index);
+                Some(current)
+            } else {
+                self.cur = None;
+                None
+            }
+        } else {
+            None
+        }
+    }
 }
 
 impl<'ast> Iterator for ArclightSyntaxTreePartialIter<'ast> {
