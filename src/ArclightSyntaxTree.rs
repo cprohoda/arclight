@@ -71,6 +71,18 @@ impl ArclightSyntaxTree {
         self.photons.len()
     }
 
+
+    pub fn partial_iter(&self) -> ArclightSyntaxTreePartialIter {
+        self.partial_iter_from(0)
+    }
+
+    pub fn partial_iter_from(&self, from: usize) -> ArclightSyntaxTreePartialIter {
+        ArclightSyntaxTreePartialIter {
+            ast: self,
+            cur: Some(from),
+        }
+    }
+
     pub fn iter(&self) -> ArclightSyntaxTreeIter {
         self.iter_from(0)
     }
@@ -227,6 +239,19 @@ impl<'ast> Iterator for ArclightSyntaxTreeIter<'ast> {
         } else {
             None
         }
+    }
+}
+
+pub struct ArclightSyntaxTreePartialIter<'ast> {
+    ast: &'ast ArclightSyntaxTree,
+    cur: Option<usize>,
+}
+
+impl<'ast> Iterator for ArclightSyntaxTreePartialIter<'ast> {
+    type Item = &'ast Photon;
+
+    fn next(&mut self) -> Option<Self::Item> {
+
     }
 }
 
