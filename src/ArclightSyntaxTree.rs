@@ -330,6 +330,28 @@ mod tests {
     }
 
     #[test]
+    fn nested_pass_test() {
+        let mut actual = ArclightSyntaxTree::new();
+        actual.build_at_marker(parse("a< b< c\n\td<\n\t\te\n\tf").expect("Testing nested_pass_test, actual parse"));
+
+        actual.marker_position(0);
+        assert_eq!(actual.marker_token(), "a");
+        actual.down();
+        assert_eq!(actual.marker_token(), "d");
+        actual.down();
+        assert_eq!(actual.marker_token(), "e");
+        actual.up();
+        actual.up();
+        actual.right();
+        assert_eq!(actual.marker_token(), "b");
+        actual.down();
+        assert_eq!(actual.marker_token(), "f");
+        actual.up();
+        actual.right();
+        assert_eq!(actual.marker_token(), "c");
+    }
+
+    #[test]
     fn ast_iter_test() {
         let mut actual = ArclightSyntaxTree::new();
         actual.build_at_marker(parse("a< b c\n\td").expect("Testing pass_delayed_build_test, actual parse"));
