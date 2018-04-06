@@ -364,4 +364,24 @@ mod tests {
         assert_eq!(actual_iter.next().unwrap().token, "c");
         assert_eq!(actual_iter.next(), None);
     }
+
+    #[test]
+    fn partial_iter_test() {
+        let mut actual = ArclightSyntaxTree::new();
+        actual.build_at_marker(parse("a< b< c\n\td<\n\t\te\n\tf").expect("Testing partial_iter_test, actual parse"));
+        println!("{:?}", actual);
+
+        let mut partial_iter = actual.partial_iter();
+
+        assert_eq!(partial_iter.next().unwrap().token, "a");
+        assert_eq!(partial_iter.next().unwrap().token, "d");
+        assert_eq!(partial_iter.next().unwrap().token, "e");
+        assert_eq!(partial_iter.next(), None);
+        assert_eq!(partial_iter.resume().unwrap().token, "b");
+        assert_eq!(partial_iter.next().unwrap().token, "f");
+        assert_eq!(partial_iter.next(), None);
+        assert_eq!(partial_iter.resume().unwrap().token, "c");
+        assert_eq!(partial_iter.next(), None);
+        assert_eq!(partial_iter.resume(), None);
+    }
 }
