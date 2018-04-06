@@ -158,7 +158,7 @@ impl ArclightSyntaxTree {
         }
     }
 
-    fn marker_token(&mut self) -> &str {
+    pub fn marker_token(&mut self) -> &str {
         let current_photon_index = self.marker.pop().unwrap();
         let token_str = self.photons.get(current_photon_index).unwrap().token.as_str();
 
@@ -181,6 +181,15 @@ impl ArclightSyntaxTree {
             }
         }
         row_tokens
+    }
+
+    pub fn marker_position(&mut self, new_position: usize) -> Result<(),AstBuilderError> {
+        if new_position < self.photons.len() {
+            self.marker.push(new_position);
+            Ok(())
+        } else {
+            Err(AstBuilderError::MarkerNotFound)
+        }
     }
 }
 
