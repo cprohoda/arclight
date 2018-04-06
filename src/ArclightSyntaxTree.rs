@@ -32,6 +32,7 @@ impl ArclightSyntaxTree {
                     for marker in &self.marker {
                         if self.photons[*marker].token == "".to_string() && self.marker_depth(*marker).unwrap() == target_depth { // TODO: Also need to check if it's correctly placed
                             current_photon_index = *marker;
+                            break;
                         }
                     }
                 },
