@@ -11,7 +11,7 @@ pub struct ArclightSyntaxTree {
     marker: Vec<usize>,
 }
 
-impl ArclightSyntaxTree {
+impl<'ast> ArclightSyntaxTree {
     pub fn new() -> ArclightSyntaxTree {
         ArclightSyntaxTree {
             photons: vec![Photon::new("".to_string())],
@@ -115,47 +115,47 @@ impl ArclightSyntaxTree {
         Ok(marker_depth)
     }
 
-    pub fn up(&mut self) -> Option<()> {
+    pub fn up(&'ast mut self) -> Result<&'ast mut ArclightSyntaxTree,AstBuilderError> {
         let current_photon_index = self.marker.pop().unwrap();
         if self.photons.get(current_photon_index).unwrap().up.is_some() {
             self.marker.push(self.photons.get(current_photon_index).unwrap().up.unwrap());
-            Some(())
+            Ok(self)
         } else {
             self.marker.push(current_photon_index);
-            None
+            Err(AstBuilderError::MarkerNotFound)
         }
     }
 
-    pub fn down(&mut self) -> Option<()> {
+    pub fn down(&'ast mut self) -> Result<&'ast mut ArclightSyntaxTree,AstBuilderError>  {
         let current_photon_index = self.marker.pop().unwrap();
         if self.photons.get(current_photon_index).unwrap().down.is_some() {
             self.marker.push(self.photons.get(current_photon_index).unwrap().down.unwrap());
-            Some(())
+            Ok(self)
         } else {
             self.marker.push(current_photon_index);
-            None
+            Err(AstBuilderError::MarkerNotFound)
         }
     }
 
-    pub fn left(&mut self) -> Option<()> {
+    pub fn left(&'ast mut self) -> Result<&'ast mut ArclightSyntaxTree,AstBuilderError>  {
         let current_photon_index = self.marker.pop().unwrap();
         if self.photons.get(current_photon_index).unwrap().left.is_some() {
             self.marker.push(self.photons.get(current_photon_index).unwrap().left.unwrap());
-            Some(())
+            Ok(self)
         } else {
             self.marker.push(current_photon_index);
-            None
+            Err(AstBuilderError::MarkerNotFound)
         }
     }
 
-    pub fn right(&mut self) -> Option<()> {
+    pub fn right(&'ast mut self) -> Result<&'ast mut ArclightSyntaxTree,AstBuilderError>  {
         let current_photon_index = self.marker.pop().unwrap();
         if self.photons.get(current_photon_index).unwrap().right.is_some() {
             self.marker.push(self.photons.get(current_photon_index).unwrap().right.unwrap());
-            Some(())
+            Ok(self)
         } else {
             self.marker.push(current_photon_index);
-            None
+            Err(AstBuilderError::MarkerNotFound)
         }
     }
 
@@ -177,17 +177,17 @@ impl ArclightSyntaxTree {
             }
             row_tokens.push_str(self.marker_token());
 
-            if self.right().is_none() {
+            if self.right().is_err() {
                 break;
             }
         }
         row_tokens
     }
 
-    pub fn marker_position(&mut self, new_position: usize) -> Result<(),AstBuilderError> {
+    pub fn marker_position(&mut self, new_position: usize) -> Result<&mut ArclightSyntaxTree,AstBuilderError> {
         if new_position < self.photons.len() {
             self.marker.push(new_position);
-            Ok(())
+            Ok(self)
         } else {
             Err(AstBuilderError::MarkerNotFound)
         }
@@ -338,19 +338,11 @@ mod tests {
 
         actual.marker_position(0);
         assert_eq!(actual.marker_token(), "a");
-        actual.down();
-        assert_eq!(actual.marker_token(), "d");
-        actual.down();
-        assert_eq!(actual.marker_token(), "e");
-        actual.up();
-        actual.up();
-        actual.right();
-        assert_eq!(actual.marker_token(), "b");
-        actual.down();
-        assert_eq!(actual.marker_token(), "f");
-        actual.up();
-        actual.right();
-        assert_eq!(actual.marker_token(), "c");
+        assert_eq!(actual.down().expect("").marker_token(), "d");
+        assert_eq!(actual.down().expect("").marker_token(), "e");
+        assert_eq!(actual.up().expect("").up().expect("").right().expect("").marker_token(), "b");
+        assert_eq!(actual.down().expect("").marker_token(), "f");
+        assert_eq!(actual.up().expect("").right().expect("").marker_token(), "c");
     }
 
     #[test]
