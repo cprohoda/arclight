@@ -263,7 +263,7 @@ pub struct ArclightSyntaxTreePartialIter<'ast> {
 }
 
 impl<'ast> ArclightSyntaxTreePartialIter<'ast> {
-    pub fn resume(&mut self) -> Option<&'ast Photon> {
+    pub fn resume(&mut self) -> Option<&'ast Photon> { // TODO: figure out the best way to handle self.cur in the best way for both next and resume
         self.cur = self.last;
         while self.depth <= self.ast.marker_depth(self.cur.unwrap()).unwrap() {
             if self.ast.photons[self.cur.unwrap()].up.is_some() {
@@ -272,7 +272,15 @@ impl<'ast> ArclightSyntaxTreePartialIter<'ast> {
                 self.cur = self.ast.photons[self.cur.unwrap()].left;
             } else if self.ast.photons[self.cur.unwrap()].right.is_some() {
                 self.cur = self.ast.photons[self.cur.unwrap()].right;
-                return Some(&self.ast.photons[self.cur.unwrap()]);
+                let current = &self.ast.photons[self.cur.unwrap()];
+                if let Some(down_index) = current.down {
+                    self.cur = Some(down_index);
+                } else if let Some(right_index) = current.right {
+                    self.cur = Some(right_index);
+                } else {
+                    self.cur = None;
+                }
+                return Some(current);
             } else {
                 return None;
             }
