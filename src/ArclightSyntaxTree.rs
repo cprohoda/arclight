@@ -74,27 +74,26 @@ impl<'ast> ArclightSyntaxTree {
 
 
     pub fn partial_iter(&self) -> ArclightSyntaxTreePartialIter {
-        self.partial_iter_from(0)
+        self.partial_iter_from(Some(0usize))
     }
 
-    pub fn partial_iter_from(&self, from: usize) -> ArclightSyntaxTreePartialIter {
+    pub fn partial_iter_from(&self, from: Option<usize>) -> ArclightSyntaxTreePartialIter {
         ArclightSyntaxTreePartialIter {
             ast: self,
-            cur: Some(from),
-            last: Some(from),
-            depth: self.marker_depth(from).unwrap()
+            cur: from,
+            last: None,
+            depth: self.marker_depth(from.unwrap_or(0usize)).unwrap()
         }
     }
 
     pub fn iter(&self) -> ArclightSyntaxTreeIter {
-        self.iter_from(0)
+        self.iter_from(Some(0usize))
     }
 
-    pub fn iter_from(&self, from: usize) -> ArclightSyntaxTreeIter {
-
+    pub fn iter_from(&self, from: Option<usize>) -> ArclightSyntaxTreeIter {
         ArclightSyntaxTreeIter{
             ast: self,
-            cur: Some(from),
+            cur: from,
         }
     }
 
