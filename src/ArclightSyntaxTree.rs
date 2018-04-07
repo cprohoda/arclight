@@ -82,6 +82,7 @@ impl<'ast> ArclightSyntaxTree {
             ast: self,
             cur: Some(from),
             last: Some(from),
+            depth: self.marker_depth(from).unwrap()
         }
     }
 
@@ -90,6 +91,7 @@ impl<'ast> ArclightSyntaxTree {
     }
 
     pub fn iter_from(&self, from: usize) -> ArclightSyntaxTreeIter {
+
         ArclightSyntaxTreeIter{
             ast: self,
             cur: Some(from),
@@ -257,22 +259,25 @@ pub struct ArclightSyntaxTreePartialIter<'ast> {
     ast: &'ast ArclightSyntaxTree,
     cur: Option<usize>,
     last: Option<usize>,
+    depth: usize,
 }
 
 impl<'ast> ArclightSyntaxTreePartialIter<'ast> {
     pub fn resume(&mut self) -> Option<&'ast Photon> {
-        let current = &self.ast.photons[self.last.unwrap()];
-        if let Some(up_index) = current.up {
-            if let Some(up_right_index) = self.ast.photons[up_index].right {
-                self.cur = Some(up_right_index);
-                Some(current)
+        self.cur = self.last;
+        while self.depth <= self.ast.marker_depth(self.cur.unwrap()).unwrap() {
+            if self.ast.photons[self.cur.unwrap()].up.is_some() {
+                self.cur = self.ast.photons[self.cur.unwrap()].up;
+            } else if self.ast.photons[self.cur.unwrap()].left.is_some() {
+                self.cur = self.ast.photons[self.cur.unwrap()].left;
+            } else if self.ast.photons[self.cur.unwrap()].right.is_some() {
+                self.cur = self.ast.photons[self.cur.unwrap()].right;
+                return Some(&self.ast.photons[self.cur.unwrap()]);
             } else {
-                self.cur = None;
-                None
+                return None;
             }
-        } else {
-            None
         }
+        return None;
     }
 }
 
@@ -363,7 +368,6 @@ mod tests {
     fn partial_iter_test() {
         let mut actual = ArclightSyntaxTree::new();
         actual.build_at_marker(parse("a< b< c\n\td<\n\t\te\n\tf").expect("Testing partial_iter_test, actual parse"));
-        println!("{:?}", actual);
 
         let mut partial_iter = actual.partial_iter();
 
