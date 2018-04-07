@@ -262,8 +262,8 @@ pub struct ArclightSyntaxTreePartialIter<'ast> {
 }
 
 impl<'ast> ArclightSyntaxTreePartialIter<'ast> {
-    pub fn resume(&mut self) -> Option<&'ast Photon> { // TODO: figure out the best way to handle self.cur in the best way for both next and resume
-        self.cur = self.last;
+    pub fn resume(&mut self) -> Option<&'ast Photon> {
+        self.cur = self.last; // TODO: figure out how to handle premature resumes. Maybe only allow resume if self.cur=None
         while self.depth <= self.ast.marker_depth(self.cur.unwrap()).unwrap() {
             if self.ast.photons[self.cur.unwrap()].up.is_some() {
                 self.cur = self.ast.photons[self.cur.unwrap()].up;
@@ -293,16 +293,23 @@ impl<'ast> Iterator for ArclightSyntaxTreePartialIter<'ast> {
 
     fn next(&mut self) -> Option<Self::Item> { // TODO: need to implement loop as in resume()
         if self.cur.is_some() && self.cur.unwrap() < self.ast.len() {
-            self.last = self.cur;
-            let current = &self.ast.photons[self.cur.unwrap()];
-            if let Some(down_index) = current.down {
-                self.cur = Some(down_index);
-            } else if let Some(right_index) = current.right {
-                self.cur = Some(right_index);
+            if self.last.is_some() {
+                self.last = self.cur;
+                if let Some(down_index) = self.ast.photons[self.cur.unwrap()].down {
+                    self.cur = Some(down_index);
+                } else if let Some(right_index) = self.ast.photons[self.cur.unwrap()].right {
+                    self.cur = Some(right_index);
+                } else {
+                    self.cur = None;
+                }
             } else {
-                self.cur = None;
+                self.last = self.cur;
             }
-            Some(current)
+            if self.cur.is_some() {
+                Some(&self.ast.photons[self.cur.unwrap()])
+            } else {
+                None
+            }
         } else {
             None
         }
