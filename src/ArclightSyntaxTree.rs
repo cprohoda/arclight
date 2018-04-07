@@ -284,7 +284,7 @@ impl<'ast> ArclightSyntaxTreePartialIter<'ast> {
 impl<'ast> Iterator for ArclightSyntaxTreePartialIter<'ast> {
     type Item = &'ast Photon;
 
-    fn next(&mut self) -> Option<Self::Item> {
+    fn next(&mut self) -> Option<Self::Item> { // TODO: need to implement loop as in resume()
         if self.cur.is_some() && self.cur.unwrap() < self.ast.len() {
             self.last = self.cur;
             let current = &self.ast.photons[self.cur.unwrap()];
