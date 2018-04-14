@@ -6,6 +6,7 @@ mod Parser;
 mod ArclightSyntaxTree;
 mod Generator;
 mod Photon;
+mod Preset;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
