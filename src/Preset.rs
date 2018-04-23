@@ -1,20 +1,10 @@
-trait Preset {
-    type PresetType;
+use ArclightObject::PropertyErr;
 
-    fn default(&self) -> DefaulPresetType;
-    fn current(&self) -> Self::PresetType;
-    fn set(&self, Self::PresetType) -> Result<(),PresetErr>;
-}
-
-enum DefaulPresetType {
+pub enum DefaulPresetType {
     default,
     bigdata,
     smalldata,
     webfront,
     webback,
     wasm,
-}
-
-enum PresetErr {
-	failed,
 }

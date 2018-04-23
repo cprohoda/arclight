@@ -1,4 +1,4 @@
-use Preset::Preset;
+use Preset::DefaulPresetType;
 
 struct ArclightObject {
     properties: Vec<Property>
@@ -28,10 +28,36 @@ impl ArclightObject {
 
 #[derive(Debug)]
 struct Property {
-    type: String,
     value: String,
+    preset: Box<Property>,
+}
+
+impl ResolvableProperty for Property {
+    type PresetType = DefaulPresetType;
+    // default properties
+    pub fn resolve(&self) -> Result<(), PropertyErr> {
+        Ok(())
+    }
+
+    pub fn current(&self) -> DefaulPresetType {
+        DefaulPresetType::default
+    }
+
+    pub fn set(&mut self, preset: Property) -> Result<(), PropertyErr> {
+        self.preset = Box<preset>;
+        Ok(())
+    }
 }
 
 trait ResolvableProperty {
-    fn resolve(&self) -> Result<(),PropertyErr>;
+    type PresetType;
+
+    pub fn resolve(&self) -> Result<(),PropertyErr>;
+    pub fn current(&self) -> Self::PresetType;
+    pub fn set(&mut self, Self::PresetType) -> Result<(),PropertyErr>;
+}
+
+pub enum PropertyErr {
+    SetFailed,
+    ResolveFailed,
 }
