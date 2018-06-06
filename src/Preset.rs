@@ -1,4 +1,4 @@
-use ArclightObject::PropertyErr;
+use Property::PropertyErr;
 
 pub enum DefaulPresetType {
     default,

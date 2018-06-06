@@ -1,63 +1,28 @@
-use Preset::DefaulPresetType;
+use Property::ResolvableProperty;
+use Property::PropertyErr;
+use ArclightSyntaxTree::ArclightSyntaxTree;
 
-struct ArclightObject {
-    properties: Vec<Property>
+pub struct ArclightObject {
+    properties: Vec<Box<ResolvableProperty>>,
+    token: String,
 }
 
 impl ArclightObject {
     fn new() -> ArclightObject {
         ArclightObject {
             properties: Vec::new(),
+            token: "".to_string(),
         }
     }
 
-    fn push<T: ResolvableProperty>(&mut self, property: T) {
-        self.properties.push(property);
+    fn push(&mut self, property: impl ResolvableProperty + 'static) {
+        self.properties.push(Box::new(property));
     }
 
     fn resolve(&mut self) -> Result<(),PropertyErr> {
         for property in self.properties {
-            match property.resolve() {
-                Ok(()) => {},
-                Err(e) => {return Err(e);},
-            }
+            property.resolve()?;
         }
         Ok(())
     }
-}
-
-#[derive(Debug)]
-struct Property {
-    value: String,
-    preset: Box<Property>,
-}
-
-impl ResolvableProperty for Property {
-    type PresetType = DefaulPresetType;
-    // default properties
-    pub fn resolve(&self) -> Result<(), PropertyErr> {
-        Ok(())
-    }
-
-    pub fn current(&self) -> DefaulPresetType {
-        DefaulPresetType::default
-    }
-
-    pub fn set(&mut self, preset: Property) -> Result<(), PropertyErr> {
-        self.preset = Box<preset>;
-        Ok(())
-    }
-}
-
-trait ResolvableProperty {
-    type PresetType;
-
-    pub fn resolve(&self) -> Result<(),PropertyErr>;
-    pub fn current(&self) -> Self::PresetType;
-    pub fn set(&mut self, Self::PresetType) -> Result<(),PropertyErr>;
-}
-
-pub enum PropertyErr {
-    SetFailed,
-    ResolveFailed,
 }

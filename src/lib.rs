@@ -4,3 +4,4 @@ pub mod Generator;
 pub mod ArclightSyntaxTree;
 pub mod ArclightObject;
 pub mod Preset;
+pub mod Property;
