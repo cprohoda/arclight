@@ -1,10 +1,10 @@
 use std::fmt;
-use std::collections::VecDeque;
 use std::cmp::max;
 
 use Photon::Photon;
 use Parser::{parse,Tokens};
 use Parser::{DEFINED,RETURN};
+use Property::PropertyErr;
 
 pub struct ArclightSyntaxTree {
     photons: Vec<Photon>,
@@ -17,6 +17,17 @@ impl<'ast> ArclightSyntaxTree {
             photons: vec![Photon::new("".to_string())],
             marker: vec![0],
         }
+    }
+
+
+
+    pub fn resolve(&mut self) -> Result<(),PropertyErr> {
+        for photon in &self.photons {
+            for property in &photon.properties {
+                property.resolve()?;
+            }
+        }
+        Ok(())
     }
 
     pub fn build_at_marker(&mut self, tokens: Tokens) -> Result<(),AstBuilderError> {

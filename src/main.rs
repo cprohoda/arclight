@@ -7,7 +7,7 @@ mod ArclightSyntaxTree;
 mod Generator;
 mod Photon;
 mod Preset;
-mod ArclightObject;
+mod Property;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
