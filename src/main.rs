@@ -1,3 +1,5 @@
+extern crate regex;
+
 use std::env;
 use std::fs;
 use std::io::{Read, Write};
@@ -8,6 +10,7 @@ mod Generator;
 mod Photon;
 mod Preset;
 mod Property;
+mod StandardProperties;
 
 fn main() {
     let args: Vec<String> = env::args().collect();

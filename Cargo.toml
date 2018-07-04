@@ -6,3 +6,4 @@ license = "MIT/Apache-2.0"
 description = "WIP crate for the arclight language"
 
 [dependencies]
+regex = "1"
