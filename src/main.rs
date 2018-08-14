@@ -6,11 +6,9 @@ use std::io::{Read, Write};
 
 mod Parser;
 mod ArclightSyntaxTree;
-mod Generator;
 mod Photon;
 mod Preset;
 mod Property;
-mod StandardProperties;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -26,7 +24,7 @@ fn main() {
     let mut ast = ArclightSyntaxTree::ArclightSyntaxTree::new();
     ast.build_at_marker(tokens);
 
-    let mut compiled = Generator::generate(ast).expect("Failed to generate arclight");
+    let mut compiled = ast.generate().expect("Failed to generate arclight");
 
     let mut f_out = fs::File::create(path_str.to_owned() + ".al").unwrap();
     f_out.write(compiled.as_bytes());
