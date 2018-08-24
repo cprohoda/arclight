@@ -7,3 +7,4 @@ description = "WIP crate for the arclight language"
 
 [dependencies]
 regex = "1"
+lazy_static = "1.1.0"

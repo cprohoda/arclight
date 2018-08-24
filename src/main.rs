@@ -1,3 +1,4 @@
+#[macro_use] extern crate lazy_static;
 extern crate regex;
 
 use std::env;
@@ -9,6 +10,7 @@ mod ArclightSyntaxTree;
 mod Photon;
 mod Preset;
 mod Property;
+mod StandardProperties;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
