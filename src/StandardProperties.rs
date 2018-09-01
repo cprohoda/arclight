@@ -2,12 +2,12 @@ use Property::ResolvableProperty;
 use Property::PropertyErr;
 use ArclightSyntaxTree::ArclightSyntaxTree;
 
-use std::collections::HashMap;
+use std::collections::{HashMap,HashSet};
 use regex::Regex;
 
 pub struct Dependencies {
-    used: HashMap<CrateName, Vec<Version>>,
-    blacklisted: HashMap<CrateName, Vec<Version>>,
+    used: HashMap<CrateName, HashSet<Version>>,
+    blacklisted: HashMap<CrateName, HashSet<Version>>,
 }
 
 impl Dependencies {
@@ -48,6 +48,33 @@ impl Dependencies {
             }
         } else {
             Err(PropertyErr::DependencyParse("".to_string()))
+        }
+    }
+
+    fn insert(&mut self, crate_name: CrateName, version: Version) -> Result<(), PropertyErr> {
+        if self.is_blacklisted(&crate_name, &version) {
+            Err(PropertyErr::Blacklisted("".to_string()))
+        } else {
+            self.used.entry(crate_name).or_default().insert(version);
+            Ok(())
+        }
+    }
+
+    fn blacklist(&mut self, crate_name: CrateName, version: Version) -> Result<(), PropertyErr> {
+        self.blacklisted.entry(crate_name).or_default().insert(version);
+        Ok(())
+    }
+
+    fn is_blacklisted(&self, crate_name: &CrateName, version: &Version) -> bool {
+        match self.blacklisted.get(crate_name) {
+            Some(versions) => {
+                if versions.contains(version) {
+                    true
+                } else {
+                    false
+                }
+            },
+            None => false,
         }
     }
 }

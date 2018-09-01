@@ -18,6 +18,7 @@ impl PartialEq for ResolvableProperty {
 }
 
 pub enum PropertyErr {
+    Blacklisted(String),
     ResolveFailed(String),
     DependencyParse(String),
     CrateNotFound(String),
