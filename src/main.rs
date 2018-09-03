@@ -10,6 +10,7 @@ mod ArclightSyntaxTree;
 mod Photon;
 mod Preset;
 mod Property;
+mod ActiveProperties;
 mod StandardProperties;
 
 fn main() {

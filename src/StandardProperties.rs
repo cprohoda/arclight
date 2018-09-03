@@ -86,8 +86,8 @@ impl ResolvableProperty for Dependencies {
 }
 
 #[derive(Hash,PartialEq,Eq)]
-struct CrateName {
-    name: String,
+pub struct CrateName {
+    pub name: String,
 }
 
 impl CrateName {
@@ -99,12 +99,12 @@ impl CrateName {
 }
 
 #[derive(Hash,PartialEq,Eq)]
-struct Version {
+pub struct Version {
     number: Vec<usize>,
 }
 
 impl Version {
-    fn new(major: usize, minor: usize, patch: usize) -> Version {
+    pub fn new(major: usize, minor: usize, patch: usize) -> Version {
         Version {
             number: vec![major, minor, patch],
         }

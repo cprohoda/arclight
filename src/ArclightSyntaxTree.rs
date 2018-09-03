@@ -5,10 +5,12 @@ use Photon::Photon;
 use Parser::{parse,Tokens};
 use Parser::{DEFINED,RETURN};
 use Property::PropertyErr;
+use ActiveProperties::ActiveProperties;
 
 pub struct ArclightSyntaxTree {
     photons: Vec<Photon>,
     marker: Vec<usize>,
+    active_properties: ActiveProperties,
 }
 
 impl<'ast> ArclightSyntaxTree {
@@ -16,6 +18,7 @@ impl<'ast> ArclightSyntaxTree {
         ArclightSyntaxTree {
             photons: vec![Photon::new("".to_string())],
             marker: vec![0],
+            active_properties: ActiveProperties::new(),
         }
     }
 
