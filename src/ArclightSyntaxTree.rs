@@ -4,13 +4,10 @@ use std::cmp::max;
 use Photon::Photon;
 use Parser::{parse,Tokens};
 use Parser::{DEFINED,RETURN};
-use Property::PropertyErr;
-use ActiveProperties::ActiveProperties;
 
 pub struct ArclightSyntaxTree {
     photons: Vec<Photon>,
     marker: Vec<usize>,
-    active_properties: ActiveProperties,
 }
 
 impl<'ast> ArclightSyntaxTree {
@@ -18,19 +15,7 @@ impl<'ast> ArclightSyntaxTree {
         ArclightSyntaxTree {
             photons: vec![Photon::new("".to_string())],
             marker: vec![0],
-            active_properties: ActiveProperties::new(),
         }
-    }
-
-
-
-    pub fn resolve(&mut self) -> Result<(),PropertyErr> {
-        for photon in &self.photons {
-            for property in &photon.properties {
-                property.resolve()?;
-            }
-        }
-        Ok(())
     }
 
     pub fn build_at_marker(&mut self, tokens: Tokens) -> Result<(),AstBuilderError> {
@@ -206,42 +191,6 @@ impl<'ast> ArclightSyntaxTree {
         } else {
             Err(AstBuilderError::MarkerNotFound)
         }
-    }
-
-    pub fn generate(&mut self) -> Result<String,AstBuilderError> {
-        const LIFETIME: &str = "lifetime";
-        const FN: &str = "fn";
-        const LET: &str = "let";
-        const REF: &str = "&";
-        const MUT: &str = "mut";
-        const META: &str = "meta";
-
-        let mut compiled = "".to_string();
-        compiled.push_str("fn main() {\n");
-
-        for photon in self.iter() {
-            match photon.token.as_str() {
-                FN => {
-                },
-                LET => {
-                },
-                LIFETIME => {
-                },
-                REF => {
-                },
-                MUT => {
-                },
-                META => {
-                    // execute generic_photon on the next one
-                },
-                _ => {
-                    self.generic_photon(&photon, &mut compiled);
-                },
-            }
-        }
-
-        compiled.push_str(");\n}");
-        Ok(compiled)
     }
 
     fn generic_photon(&self, photon: &Photon, compiled: &mut String) {
